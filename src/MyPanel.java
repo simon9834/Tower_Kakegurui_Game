@@ -10,11 +10,19 @@ import java.util.Random;
 public class MyPanel extends JPanel implements ActionListener {
     private JButton rightVent = new JButton(),
             leftVent = new JButton(), rightDoor = new JButton(), leftDoor = new JButton();
+    private JFrame frame;
+    private JPanel floorPanel;
+    private JPanel puzzlePanel;
+    private JLabel floorLabel;
+    private JLabel puzzleLabel;
+    private JTextField answerField;
+    private JButton submitButton;
     private Font myFont = new Font("Arial", Font.BOLD, 8);
     private JPanel currentPanel;
     private final int PANEL_WIDTH = 1000, PANEL_HEIGHT = 600;
     private ArrayList<Riddles> riddles = new ArrayList<>();
     private ArrayList<Puzzles> puzzles = new ArrayList<>();
+    private String actionWhere;
     private Image playerImg, backgroundImg, chessPuzzle;
     private Timer timer;
     private int endX, endY, randomIndex, startX = 700, startY = 500;
@@ -32,7 +40,6 @@ public class MyPanel extends JPanel implements ActionListener {
         createBackground("1stFloor.jpg");
         createPlayer();
         this.setVisible(true);
-        setCurrentPanel(this);
         repaint();
     }//is finished
 
@@ -114,24 +121,6 @@ public class MyPanel extends JPanel implements ActionListener {
         timer = new Timer(animationDuration / numFrames, this);
     }
 
-    private void displayRiddle(String riddle, String answer) {
-        RiddlePanel riddlePanel = new RiddlePanel(riddle, answer, PANEL_WIDTH, PANEL_HEIGHT);
-        setCurrentPanel(riddlePanel);
-    }
-
-    private void displayChessPuzzle(Image image, String text) {
-        ChessPuzzlesPanel puzzlePanel = new ChessPuzzlesPanel(image, text, PANEL_WIDTH, PANEL_HEIGHT);
-        setCurrentPanel(puzzlePanel);
-    }
-
-    private void setCurrentPanel(JPanel panel) {
-        if (currentPanel != null) {
-            currentPanel.removeAll();
-        }
-        currentPanel = panel;
-        repaint();
-    }
-
     private JButton createButton(String text, int x, int y, JButton button) {
         button.setFont(myFont);
         button.addMouseListener(new MouseAdapter() {
@@ -155,7 +144,6 @@ public class MyPanel extends JPanel implements ActionListener {
         button.setVisible(true);
         return button;
     }
-
     private void changePosition(JButton button, int x, int y) {
         button.setBounds(x, y, 70, 30);
     }
@@ -164,20 +152,21 @@ public class MyPanel extends JPanel implements ActionListener {
         Graphics2D g2D = (Graphics2D) g;
 
         if (chessPuzzle != null) {
-            hideButtons();
-
+            this.removeAll();
             int xPos = 100;
             int yPos = 50;
             g2D.drawString(puzzles.get(randomIndex).getQuestion(), xPos + 150, yPos - 30);
             g2D.drawImage(chessPuzzle, xPos, yPos, null);
             chessPuzzle = null;
+            createSwing();
         } else if (riddle != null) {
-            hideButtons();
+            this.removeAll();
 
             int xPos = 100;
             int yPos = 50;
             g2D.drawString(riddle, xPos, yPos);
             riddle = null;
+            createSwing();
         } else {
             g2D.drawImage(backgroundImg, 0, 0, null);
             g2D.drawString("You", startX + 13, startY - 5);
@@ -189,12 +178,6 @@ public class MyPanel extends JPanel implements ActionListener {
         leftVent.setVisible(false);
         rightVent.setVisible(false);
         rightDoor.setVisible(false);
-    }
-    public void showButtons() {
-        leftDoor.setVisible(true);
-        leftVent.setVisible(true);
-        rightVent.setVisible(true);
-        rightDoor.setVisible(true);
     }
 
     public void animate(int startX, int startY, int endX, int endY) {
@@ -223,9 +206,7 @@ public class MyPanel extends JPanel implements ActionListener {
         chessPuzzle = puzzles.get(randomIndex).getImg().getScaledInstance(PANEL_HEIGHT - 200, PANEL_HEIGHT - 200, Image.SCALE_SMOOTH);
         chessPuzzle = new ImageIcon(chessPuzzle).getImage();
         puzzleText = puzzles.get(randomIndex).getQuestion();
-        Rectangle backgroundRect = new Rectangle(0, 0, PANEL_WIDTH, PANEL_HEIGHT);
-        displayChessPuzzle(chessPuzzle, puzzleText);
-        repaint(backgroundRect);
+        repaint();
     }
 
     public void getRiddle() {
@@ -234,7 +215,6 @@ public class MyPanel extends JPanel implements ActionListener {
         randomIndex = rd.nextInt(riddles.size() - 1);
         riddle = riddles.get(randomIndex).getRiddle();
         answer = riddles.get(randomIndex).getAnswer();
-        displayRiddle(riddle, answer);
         repaint();
     }
 
@@ -251,12 +231,16 @@ public class MyPanel extends JPanel implements ActionListener {
         int deltaX = 0;
         int deltaY = 0;
         if (e.getSource() == leftDoor) {
+            actionWhere = "leftDoor";
             animate(startX, startY, leftDoor.getX(), leftDoor.getY());
         } else if (e.getSource() == rightDoor) {
+            actionWhere = "rightDoor";
             animate(startX, startY, rightDoor.getX(), rightDoor.getY());
         } else if (e.getSource() == leftVent) {
+            actionWhere = "leftVent";
             animate(startX, startY, leftVent.getX(), leftVent.getY());
         } else if (e.getSource() == rightVent) {
+            actionWhere = "rightVent";
             animate(startX, startY, rightVent.getX(), rightVent.getY());
         } else if (e.getSource() == timer) {
             deltaX = (endX - startX) / numFrames;
@@ -275,7 +259,38 @@ public class MyPanel extends JPanel implements ActionListener {
             else {
                 getRiddle();
             }
-
         }
+    }
+
+    public String getActionWhere() {
+        return actionWhere;
+    }
+
+    public void setActionWhere(String actionWhere) {
+        this.actionWhere = actionWhere;
+    }
+    public void createSwing() {
+        floorPanel = new JPanel();
+        floorLabel = new JLabel();
+        floorPanel.add(floorLabel);
+
+        puzzlePanel = new JPanel();
+        puzzlePanel.setLayout(new FlowLayout());
+        puzzleLabel = new JLabel();
+        answerField = new JTextField();
+        answerField.setBackground(Color.CYAN);
+        answerField.setPreferredSize(new Dimension(200, 90));
+        submitButton = new JButton("Submit");
+        submitButton.addActionListener(e -> {
+            String answer = answerField.getText();
+            if (true) {
+
+            } else {
+                // Handle incorrect answer
+            }
+        });
+        puzzlePanel.add(puzzleLabel);
+        puzzlePanel.add(answerField);
+        puzzlePanel.add(submitButton);
     }
 }

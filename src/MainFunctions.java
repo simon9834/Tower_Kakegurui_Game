@@ -4,6 +4,8 @@ public class MainFunctions {
 
 
     public boolean checkAnswer(String answer) {
+       // if()
+        //if(answer == )
         return true;
     }
 

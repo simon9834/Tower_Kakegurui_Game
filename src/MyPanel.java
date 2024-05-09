@@ -4,7 +4,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BaseMultiResolutionImage;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Random;
 
 public class MyPanel extends JPanel implements ActionListener {
@@ -18,12 +20,13 @@ public class MyPanel extends JPanel implements ActionListener {
     private JTextField answerField;
     private JButton submitButton;
     private Font myFont = new Font("Arial", Font.BOLD, 8);
-    private JPanel currentPanel;
     private final int PANEL_WIDTH = 1000, PANEL_HEIGHT = 600;
     private ArrayList<Riddles> riddles = new ArrayList<>();
     private ArrayList<Puzzles> puzzles = new ArrayList<>();
+    private ArrayList<String> correctAr = new ArrayList<>();
+    private ArrayList<String> incorrectAr = new ArrayList<>();
     private String actionWhere;
-    private Image playerImg, backgroundImg, chessPuzzle;
+    private Image playerImg, backgroundImg, chessPuzzle, correct, incorrect;
     private Timer timer;
     private int endX, endY, randomIndex, startX = 700, startY = 500;
     private String riddle, answer, puzzleText;
@@ -44,11 +47,12 @@ public class MyPanel extends JPanel implements ActionListener {
     }//is finished
 
     public void my2floorPanel() {
-        changePosition(leftDoor, 626, 349);
-        changePosition(rightDoor, 969, 397);
-        changePosition(leftVent, 36, 470);
-        changePosition(rightVent, 747, 478);
-        createBackground("2stFloor.png");
+        leftDoor = createButton("Left Door", 40, 350, leftDoor);
+        rightDoor = createButton("Right Door", 900, 250, rightDoor);
+        leftVent = createButton("Left Vent", 200, 436, leftVent);
+        rightVent = createButton("Right Vent", 632, 147, rightVent);
+        addButtons(leftDoor, leftVent, rightDoor, rightVent);
+        createBackground("1stFloor.jpg");
         createPlayer();
         this.setVisible(true);
         repaint();
@@ -104,6 +108,12 @@ public class MyPanel extends JPanel implements ActionListener {
         backgroundImg = new ImageIcon(filePath).getImage();
         backgroundImg = backgroundImg.getScaledInstance(PANEL_WIDTH, PANEL_HEIGHT, Image.SCALE_SMOOTH);
         backgroundImg = new ImageIcon(backgroundImg).getImage();
+    }
+    public Image createImage(Image img, int width, int height, String filePath){
+        img = new ImageIcon(filePath).getImage();
+        img = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        img = new ImageIcon(img).getImage();
+        return img;
     }
 
     public MyPanel() {
@@ -269,28 +279,45 @@ public class MyPanel extends JPanel implements ActionListener {
     public void setActionWhere(String actionWhere) {
         this.actionWhere = actionWhere;
     }
-    public void createSwing() {
-        floorPanel = new JPanel();
-        floorLabel = new JLabel();
-        floorPanel.add(floorLabel);
+    public void fillCorrectIncorrect(){
+        correctAr.add("\"C:\\Users\\HP EliteBook 830 G5\\Downloads\\correct\\correct - obama.htm\"");
+        correctAr.add("\"C:\\Users\\HP EliteBook 830 G5\\Downloads\\correct\\correct - profesor.jpg\"");
+        correctAr.add("\"C:\\Users\\HP EliteBook 830 G5\\Downloads\\correct\\correct - pidižvík.jpg\"");
+        correctAr.add("\"C:\\Users\\HP EliteBook 830 G5\\Downloads\\correct\\correct - minion.jpg\"");
+        correctAr.add("\"C:\\Users\\HP EliteBook 830 G5\\Downloads\\correct\\correct - cat.png\"");
+        correctAr.add("\"C:\\Users\\HP EliteBook 830 G5\\Downloads\\correct\\correct - simpson.jpg\"");
+        correctAr.add("\"C:\\Users\\HP EliteBook 830 G5\\Downloads\\correct\\correct - sigmaCat.png\"");
+        correctAr.add("\"C:\\Users\\HP EliteBook 830 G5\\Downloads\\correct\\correct - competition.jpg\"");
 
-        puzzlePanel = new JPanel();
-        puzzlePanel.setLayout(new FlowLayout());
-        puzzleLabel = new JLabel();
+        incorrectAr.add("\"C:\\Users\\HP EliteBook 830 G5\\Downloads\\incorrect\\incorrect - face.jpg\"");
+        incorrectAr.add("\"C:\\Users\\HP EliteBook 830 G5\\Downloads\\incorrect\\incorrect - boss.jpg\"");
+        incorrectAr.add("\"C:\\Users\\HP EliteBook 830 G5\\Downloads\\incorrect\\incorrect - sigma.png\"");
+        incorrectAr.add("\"C:\\Users\\HP EliteBook 830 G5\\Downloads\\incorrect\\incorrect - what da hail.jpg\"");
+        incorrectAr.add("\"C:\\Users\\HP EliteBook 830 G5\\Downloads\\incorrect\\incorrect - obama.jpg\"");
+        incorrectAr.add("\"C:\\Users\\HP EliteBook 830 G5\\Downloads\\incorrect\\incorrect - trump.jpg\"");
+        incorrectAr.add("\"C:\\Users\\HP EliteBook 830 G5\\Downloads\\incorrect\\incorrect - competition\"");
+        incorrectAr.add("\"C:\\Users\\HP EliteBook 830 G5\\Downloads\\incorrect\\incorrect - tulen.jpg\"");
+        incorrectAr.add("\"C:\\Users\\HP EliteBook 830 G5\\Downloads\\incorrect\\incorrect - catBath.jpg\"");
+    }
+    public void createSwing() {
+        fillCorrectIncorrect();
         answerField = new JTextField();
         answerField.setBackground(Color.CYAN);
-        answerField.setPreferredSize(new Dimension(200, 90));
-        submitButton = new JButton("Submit");
+        Dimension dimForTextField = new Dimension(520, 500);
+        answerField.setBounds((int)dimForTextField.getWidth(), (int)dimForTextField.getHeight(), 100, 40);
+        submitButton = new JButton();
+        this.add(createButton("Submit", 510, 500, submitButton));
+        this.add(answerField);
         submitButton.addActionListener(e -> {
             String answer = answerField.getText();
-            if (true) {
-
+            if (Objects.equals(this.answer, answer)) {
+                this.removeAll();
+                createBackground(correctAr.get(randomIndex));
             } else {
-                // Handle incorrect answer
+                this.removeAll();
+                createBackground(incorrectAr.get(randomIndex));
             }
         });
-        puzzlePanel.add(puzzleLabel);
-        puzzlePanel.add(answerField);
-        puzzlePanel.add(submitButton);
+
     }
 }

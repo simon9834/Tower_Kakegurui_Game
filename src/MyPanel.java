@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BaseMultiResolutionImage;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Random;
@@ -160,23 +161,23 @@ public class MyPanel extends JPanel implements ActionListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2D = (Graphics2D) g;
-
+        Font myFont = new Font("Arial", Font.BOLD, 40);
         if (chessPuzzle != null) {
             this.removeAll();
             int xPos = 100;
             int yPos = 50;
-            g2D.drawString(puzzles.get(randomIndex).getQuestion(), xPos + 150, yPos - 30);
-            g2D.drawImage(chessPuzzle, xPos, yPos, null);
+            g2D.setFont(myFont);
+            g2D.drawString(puzzles.get(randomIndex).getQuestion(), xPos + 325, yPos);
+            g2D.drawImage(chessPuzzle, xPos + 200, yPos + 30, null);
             chessPuzzle = null;
-            createSwing();
+            createSubmitButtonAndTextField();
         } else if (riddle != null) {
             this.removeAll();
 
-            int xPos = 100;
-            int yPos = 50;
-            g2D.drawString(riddle, xPos, yPos);
+            g2D.setFont(myFont);
+            g2D.drawString(riddle, 0,55);
             riddle = null;
-            createSwing();
+            createSubmitButtonAndTextField();
         } else {
             g2D.drawImage(backgroundImg, 0, 0, null);
             g2D.drawString("You", startX + 13, startY - 5);
@@ -299,14 +300,14 @@ public class MyPanel extends JPanel implements ActionListener {
         incorrectAr.add("\"C:\\Users\\HP EliteBook 830 G5\\Downloads\\incorrect\\incorrect - tulen.jpg\"");
         incorrectAr.add("\"C:\\Users\\HP EliteBook 830 G5\\Downloads\\incorrect\\incorrect - catBath.jpg\"");
     }
-    public void createSwing() {
+    public void createSubmitButtonAndTextField() {
         fillCorrectIncorrect();
         answerField = new JTextField();
         answerField.setBackground(Color.CYAN);
-        Dimension dimForTextField = new Dimension(520, 500);
+        Dimension dimForTextField = new Dimension(450, 500);
         answerField.setBounds((int)dimForTextField.getWidth(), (int)dimForTextField.getHeight(), 100, 40);
         submitButton = new JButton();
-        this.add(createButton("Submit", 510, 500, submitButton));
+        this.add(createButton("Submit", 465, 555, submitButton));
         this.add(answerField);
         submitButton.addActionListener(e -> {
             String answer = answerField.getText();

@@ -13,13 +13,9 @@ import java.util.Random;
 public class MyPanel extends JPanel implements ActionListener {
     private JButton rightVent = new JButton(),
             leftVent = new JButton(), rightDoor = new JButton(), leftDoor = new JButton();
-    private JFrame frame;
-    private JPanel floorPanel;
-    private JPanel puzzlePanel;
-    private JLabel floorLabel;
-    private JLabel puzzleLabel;
     private JTextField answerField;
     private JButton submitButton;
+    private boolean solvingRn;
     private Font myFont = new Font("Arial", Font.BOLD, 8);
     private final int PANEL_WIDTH = 1000, PANEL_HEIGHT = 600;
     private ArrayList<Riddles> riddles = new ArrayList<>();
@@ -27,13 +23,14 @@ public class MyPanel extends JPanel implements ActionListener {
     private ArrayList<String> correctAr = new ArrayList<>();
     private ArrayList<String> incorrectAr = new ArrayList<>();
     private String actionWhere;
-    private Image playerImg, backgroundImg, chessPuzzle, correct, incorrect;
+    private Image playerImg, backgroundImg, chessPuzzle;
     private Timer timer;
     private int endX, endY, randomIndex, startX = 700, startY = 500;
     private String riddle, answer, puzzleText;
     private PlayerStats ps = new PlayerStats();
     private final int numFrames = 50 + (100 - ps.getStamina());
     private MainFunctions mf;
+    private Random rd;
 
     public void my1floorPanel() {
         leftDoor = createButton("Left Door", 40, 350, leftDoor);
@@ -110,7 +107,8 @@ public class MyPanel extends JPanel implements ActionListener {
         backgroundImg = backgroundImg.getScaledInstance(PANEL_WIDTH, PANEL_HEIGHT, Image.SCALE_SMOOTH);
         backgroundImg = new ImageIcon(backgroundImg).getImage();
     }
-    public Image createImage(Image img, int width, int height, String filePath){
+
+    public Image createImage(Image img, int width, int height, String filePath) {
         img = new ImageIcon(filePath).getImage();
         img = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
         img = new ImageIcon(img).getImage();
@@ -155,34 +153,40 @@ public class MyPanel extends JPanel implements ActionListener {
         button.setVisible(true);
         return button;
     }
+
     private void changePosition(JButton button, int x, int y) {
         button.setBounds(x, y, 70, 30);
     }
+
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2D = (Graphics2D) g;
-        Font myFont = new Font("Arial", Font.BOLD, 40);
+        Font myFont = new Font("Arial", Font.BOLD, 20);
         if (chessPuzzle != null) {
             this.removeAll();
             int xPos = 100;
             int yPos = 50;
+            g2D.drawString(rulesForChessPuzzles(), 135, 15);
             g2D.setFont(myFont);
-            g2D.drawString(puzzles.get(randomIndex).getQuestion(), xPos + 325, yPos);
+            g2D.drawString(puzzles.get(randomIndex).getQuestion(), xPos + 310, yPos + 15);
             g2D.drawImage(chessPuzzle, xPos + 200, yPos + 30, null);
             chessPuzzle = null;
             createSubmitButtonAndTextField();
         } else if (riddle != null) {
             this.removeAll();
             g2D.setFont(myFont);
-            g2D.drawString(riddle, 0,55);
+            g2D.drawString(riddle, 0, 55);
             riddle = null;
             createSubmitButtonAndTextField();
+        } else if (solvingRn) {
+            g2D.drawImage(backgroundImg, 0, 0, null);
         } else {
             g2D.drawImage(backgroundImg, 0, 0, null);
             g2D.drawString("You", startX + 13, startY - 5);
             g2D.drawImage(playerImg, startX, startY, null);
         }
     }
+
     public void hideButtons() {
         leftDoor.setVisible(false);
         leftVent.setVisible(false);
@@ -198,30 +202,37 @@ public class MyPanel extends JPanel implements ActionListener {
         timer.start();
     }
 
-    public void loadChessPuzzle() {
-        puzzles.add(new Puzzles(new ImageIcon("chessPuzzle1.png").getImage(), "Question1", "Answer1"));
-        puzzles.add(new Puzzles(new ImageIcon("chessPuzzle2.png").getImage(), "Question2", "Answer2"));
-        puzzles.add(new Puzzles(new ImageIcon("chessPuzzle3.png").getImage(), "Question3", "Answer3"));
-        puzzles.add(new Puzzles(new ImageIcon("chessPuzzle4.png").getImage(), "Question4", "Answer4"));
-        puzzles.add(new Puzzles(new ImageIcon("chessPuzzle5.png").getImage(), "Question5", "Answer5"));
-        puzzles.add(new Puzzles(new ImageIcon("chessPuzzle6.png").getImage(), "Question6", "Answer6"));
-        puzzles.add(new Puzzles(new ImageIcon("chessPuzzle7.png").getImage(), "Question7", "Answer7"));
-        puzzles.add(new Puzzles(new ImageIcon("chessPuzzle8.png").getImage(), "Question8", "Answer8"));
+    public String rulesForChessPuzzles() {
+        return "Rules: In chess puzzles you need to enter either " +
+                "the figure that moves and the placement where it would move, or the " +
+                "number of moves that it would take to win";
+    }
+
+    public void loadChessPuzzle() { //https://chessfox.com/chess-puzzles-for-intermediate-players/
+        puzzles.add(new Puzzles(new ImageIcon("ChessPuzzleImg/chessPuzzle1.png").getImage(), "where will you get material advantage (white on turn)", "Rf7"));
+        puzzles.add(new Puzzles(new ImageIcon("ChessPuzzleImg/chessPuzzle2.png").getImage(), "where will you get material advantage threatening a mate (black on turn)", "Dh5"));
+        puzzles.add(new Puzzles(new ImageIcon("ChessPuzzleImg/chessPuzzle3.png").getImage(), "how many moves tilla mate? (white on turn)", "2"));
+        puzzles.add(new Puzzles(new ImageIcon("ChessPuzzleImg/chessPuzzle4.png").getImage(), "whats the best move here? (black on turn)", "Dh4"));
+        puzzles.add(new Puzzles(new ImageIcon("ChessPuzzleImg/chessPuzzle5.png").getImage(), "where will you move the bishop? (black on turn)", "Bb2"));
+        puzzles.add(new Puzzles(new ImageIcon("ChessPuzzleImg/chessPuzzle6.png").getImage(), "how many moves till mate? (white on move)", "2"));
+        puzzles.add(new Puzzles(new ImageIcon("ChessPuzzleImg/chessPuzzle7.png").getImage(), "how many moves till mate? (white on move)", "2"));
+        puzzles.add(new Puzzles(new ImageIcon("ChessPuzzleImg/chessPuzzle8.png").getImage(), "can you take the knight on e4 without any further problems? (yes/no)", "yes"));
     }
 
     public void getChessPuzzle() {
+        rd = new Random();
         loadChessPuzzle();
-        Random rd = new Random();
         randomIndex = rd.nextInt(puzzles.size() - 1);
         chessPuzzle = puzzles.get(randomIndex).getImg().getScaledInstance(PANEL_HEIGHT - 200, PANEL_HEIGHT - 200, Image.SCALE_SMOOTH);
         chessPuzzle = new ImageIcon(chessPuzzle).getImage();
         puzzleText = puzzles.get(randomIndex).getQuestion();
+        answer = puzzles.get(randomIndex).getAnswer();
         repaint();
     }
 
     public void getRiddle() {
+        rd = new Random();
         loadRiddle();
-        Random rd = new Random();
         randomIndex = rd.nextInt(riddles.size() - 1);
         riddle = riddles.get(randomIndex).getRiddle();
         answer = riddles.get(randomIndex).getAnswer();
@@ -229,11 +240,11 @@ public class MyPanel extends JPanel implements ActionListener {
     }
 
     public void loadRiddle() {
-        riddles.add(new Riddles("What is something that you earn, but can also save and spend?", "money"));
-        riddles.add(new Riddles("What is something that can grow over time, but needs to be managed carefully?", "investments"));
-        riddles.add(new Riddles("What is something that can protect you from unexpected financial emergencies?", "insurance"));
-        riddles.add(new Riddles("What is something that you must do regularly to keep track of your income and expenses?", "budgeting"));
-        riddles.add(new Riddles("What is something that can help you achieve your financial goals, but requires patience and discipline?", "saving"));
+        riddles.add(new Riddles("What is something that you earn, but can" + "\n" + " also save and spend?", "money"));
+        riddles.add(new Riddles("What is something that can grow over time," + "\n" + " but needs to be managed carefully?", "investments"));
+        riddles.add(new Riddles("What is something that can protect you from" + "\n" + " unexpected financial emergencies?", "insurance"));
+        riddles.add(new Riddles("What is something that you must do regularly" + "\n" + " to keep track of your income and expenses?", "budgeting"));
+        riddles.add(new Riddles("What is something that can help you achieve" + "\n" + " your financial goals, but requires patience and discipline?", "saving"));
     }
 
     @Override
@@ -279,45 +290,53 @@ public class MyPanel extends JPanel implements ActionListener {
     public void setActionWhere(String actionWhere) {
         this.actionWhere = actionWhere;
     }
-    public void fillCorrectIncorrect(){
-        correctAr.add("correct - obama.htm");
-        correctAr.add("correct - profesor.jpg");
-        correctAr.add("correct - pidižvík.jpg");
-        correctAr.add("correct - minion.jpg");
-        correctAr.add("correct - cat.png");
-        correctAr.add("correct - simpson.jpg");
-        correctAr.add("correct - sigmaCat.png");
-        correctAr.add("correct - competition.jpg");
 
-        incorrectAr.add("incorrect - face.jpg");
-        incorrectAr.add("incorrect - boss.jpg");
-        incorrectAr.add("incorrect - sigma.png");
-        incorrectAr.add("incorrect - what da hail.jpg");
-        incorrectAr.add("incorrect - obama.jpg");
-        incorrectAr.add("incorrect - trump.jpg");
-        incorrectAr.add("incorrect - competition");
-        incorrectAr.add("incorrect - tulen.jpg");
-        incorrectAr.add("incorrect - catBath.jpg");
+    public void fillCorrectIncorrect() {
+        correctAr.add("Correct/correct - obama.htm");
+        correctAr.add("Correct/correct - profesor.jpg");
+        correctAr.add("Correct/correct - pidižvík.jpg");
+        correctAr.add("Correct/correct - minion.jpg");
+        correctAr.add("Correct/correct - cat.png");
+        correctAr.add("Correct/correct - simpson.jpg");
+        correctAr.add("Correct/correct - sigmaCat.png");
+        correctAr.add("Correct/correct - competition.jpg");
+        correctAr.add("Correct/ok boomer.jpg");
+
+        incorrectAr.add("Incorrect/incorrect - face.jpg");
+        incorrectAr.add("Incorrect/incorrect - boss.jpg");
+        incorrectAr.add("Incorrect/incorrect - sigma.png");
+        incorrectAr.add("Incorrect/incorrect - what da hail.jpg");
+        incorrectAr.add("Incorrect/incorrect - obama.jpg");
+        incorrectAr.add("Incorrect/incorrect - trump.jpg");
+        incorrectAr.add("Incorrect/incorrect - competition");
+        incorrectAr.add("Incorrect/incorrect - tulen.jpg");
+        incorrectAr.add("Incorrect/incorrect - catBath.jpg");
     }
+
     public void createSubmitButtonAndTextField() {
+        rd = new Random();
+        solvingRn = true;
         fillCorrectIncorrect();
         answerField = new JTextField();
-        answerField.setBackground(Color.CYAN);
+        answerField.setBackground(Color.LIGHT_GRAY);
         Dimension dimForTextField = new Dimension(450, 500);
-        answerField.setBounds((int)dimForTextField.getWidth(), (int)dimForTextField.getHeight(), 100, 40);
+        answerField.setBounds((int) dimForTextField.getWidth(), (int) dimForTextField.getHeight(), 100, 40);
         submitButton = new JButton();
+        submitButton.setBackground(Color.BLACK);
         this.add(createButton("Submit", 465, 555, submitButton));
         this.add(answerField);
+        randomIndex = rd.nextInt(correctAr.size()-1);
         submitButton.addActionListener(e -> {
             String answer = answerField.getText();
             if (Objects.equals(this.answer, answer)) {
                 this.removeAll();
                 createBackground(correctAr.get(randomIndex));
+                repaint();
             } else {
                 this.removeAll();
                 createBackground(incorrectAr.get(randomIndex));
+                repaint();
             }
         });
-
     }
 }

@@ -173,7 +173,6 @@ public class MyPanel extends JPanel implements ActionListener {
             createSubmitButtonAndTextField();
         } else if (riddle != null) {
             this.removeAll();
-
             g2D.setFont(myFont);
             g2D.drawString(riddle, 0,55);
             riddle = null;
@@ -281,24 +280,24 @@ public class MyPanel extends JPanel implements ActionListener {
         this.actionWhere = actionWhere;
     }
     public void fillCorrectIncorrect(){
-        correctAr.add("\"C:\\Users\\HP EliteBook 830 G5\\Downloads\\correct\\correct - obama.htm\"");
-        correctAr.add("\"C:\\Users\\HP EliteBook 830 G5\\Downloads\\correct\\correct - profesor.jpg\"");
-        correctAr.add("\"C:\\Users\\HP EliteBook 830 G5\\Downloads\\correct\\correct - pidižvík.jpg\"");
-        correctAr.add("\"C:\\Users\\HP EliteBook 830 G5\\Downloads\\correct\\correct - minion.jpg\"");
-        correctAr.add("\"C:\\Users\\HP EliteBook 830 G5\\Downloads\\correct\\correct - cat.png\"");
-        correctAr.add("\"C:\\Users\\HP EliteBook 830 G5\\Downloads\\correct\\correct - simpson.jpg\"");
-        correctAr.add("\"C:\\Users\\HP EliteBook 830 G5\\Downloads\\correct\\correct - sigmaCat.png\"");
-        correctAr.add("\"C:\\Users\\HP EliteBook 830 G5\\Downloads\\correct\\correct - competition.jpg\"");
+        correctAr.add("correct - obama.htm");
+        correctAr.add("correct - profesor.jpg");
+        correctAr.add("correct - pidižvík.jpg");
+        correctAr.add("correct - minion.jpg");
+        correctAr.add("correct - cat.png");
+        correctAr.add("correct - simpson.jpg");
+        correctAr.add("correct - sigmaCat.png");
+        correctAr.add("correct - competition.jpg");
 
-        incorrectAr.add("\"C:\\Users\\HP EliteBook 830 G5\\Downloads\\incorrect\\incorrect - face.jpg\"");
-        incorrectAr.add("\"C:\\Users\\HP EliteBook 830 G5\\Downloads\\incorrect\\incorrect - boss.jpg\"");
-        incorrectAr.add("\"C:\\Users\\HP EliteBook 830 G5\\Downloads\\incorrect\\incorrect - sigma.png\"");
-        incorrectAr.add("\"C:\\Users\\HP EliteBook 830 G5\\Downloads\\incorrect\\incorrect - what da hail.jpg\"");
-        incorrectAr.add("\"C:\\Users\\HP EliteBook 830 G5\\Downloads\\incorrect\\incorrect - obama.jpg\"");
-        incorrectAr.add("\"C:\\Users\\HP EliteBook 830 G5\\Downloads\\incorrect\\incorrect - trump.jpg\"");
-        incorrectAr.add("\"C:\\Users\\HP EliteBook 830 G5\\Downloads\\incorrect\\incorrect - competition\"");
-        incorrectAr.add("\"C:\\Users\\HP EliteBook 830 G5\\Downloads\\incorrect\\incorrect - tulen.jpg\"");
-        incorrectAr.add("\"C:\\Users\\HP EliteBook 830 G5\\Downloads\\incorrect\\incorrect - catBath.jpg\"");
+        incorrectAr.add("incorrect - face.jpg");
+        incorrectAr.add("incorrect - boss.jpg");
+        incorrectAr.add("incorrect - sigma.png");
+        incorrectAr.add("incorrect - what da hail.jpg");
+        incorrectAr.add("incorrect - obama.jpg");
+        incorrectAr.add("incorrect - trump.jpg");
+        incorrectAr.add("incorrect - competition");
+        incorrectAr.add("incorrect - tulen.jpg");
+        incorrectAr.add("incorrect - catBath.jpg");
     }
     public void createSubmitButtonAndTextField() {
         fillCorrectIncorrect();

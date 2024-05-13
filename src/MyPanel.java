@@ -15,9 +15,9 @@ public class MyPanel extends JPanel implements ActionListener {
             leftVent = new JButton(), rightDoor = new JButton(), leftDoor = new JButton();
     private JTextField answerField;
     private JButton submitButton;
-    private boolean solvingRn;
+    private boolean solvingRn, solved;
     private Font myFont = new Font("Arial", Font.BOLD, 8);
-    private final int PANEL_WIDTH = 1000, PANEL_HEIGHT = 600;
+    private final int PANEL_WIDTH = 1000, PANEL_HEIGHT = 600, animationDuration = 1000;
     private ArrayList<Riddles> riddles = new ArrayList<>();
     private ArrayList<Puzzles> puzzles = new ArrayList<>();
     private ArrayList<String> correctAr = new ArrayList<>();
@@ -25,8 +25,8 @@ public class MyPanel extends JPanel implements ActionListener {
     private String actionWhere;
     private Image playerImg, backgroundImg, chessPuzzle;
     private Timer timer;
-    private int endX, endY, randomIndex, startX = 700, startY = 500;
-    private String riddle, answer, puzzleText;
+    private int endX, endY, randomIndex, startX = 700, startY = 500, xCenteredValue;
+    private String riddle, answer, puzzleText, flexibleString;
     private PlayerStats ps = new PlayerStats();
     private final int numFrames = 50 + (100 - ps.getStamina());
     private MainFunctions mf;
@@ -50,7 +50,7 @@ public class MyPanel extends JPanel implements ActionListener {
         leftVent = createButton("Left Vent", 200, 436, leftVent);
         rightVent = createButton("Right Vent", 632, 147, rightVent);
         addButtons(leftDoor, leftVent, rightDoor, rightVent);
-        createBackground("1stFloor.jpg");
+        createBackground("2stFloor.png");
         createPlayer();
         this.setVisible(true);
         repaint();
@@ -116,6 +116,10 @@ public class MyPanel extends JPanel implements ActionListener {
     }
 
     public MyPanel() {
+        layoutSetting();
+    }
+
+    public void layoutSetting() {
         this.setLayout(null);
         this.setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
         mf = new MainFunctions();
@@ -126,8 +130,17 @@ public class MyPanel extends JPanel implements ActionListener {
             case 4 -> my4floorPanel();
             case 5 -> my5floorPanel();
         }
-        int animationDuration = 1000;
-        timer = new Timer(animationDuration / numFrames, this);
+    }
+
+    public void timerSetting(int milliSecs, boolean waitingForFloor) {
+        if (!waitingForFloor) {
+            timer = new Timer(milliSecs, this);
+        } else {
+            timer = new Timer(milliSecs, e -> {
+                nextFloorOrBackToFloor();
+                timer.setRepeats(false);
+            });
+        }
     }
 
     private JButton createButton(String text, int x, int y, JButton button) {
@@ -158,28 +171,39 @@ public class MyPanel extends JPanel implements ActionListener {
         button.setBounds(x, y, 70, 30);
     }
 
+    public void setCenteredWidth(String string, FontMetrics fm) {
+        flexibleString = string;
+        xCenteredValue = centerAString(fm.stringWidth(string));
+    }
+
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2D = (Graphics2D) g;
+        FontMetrics fontMetrics = g2D.getFontMetrics();
         Font myFont = new Font("Arial", Font.BOLD, 20);
         if (chessPuzzle != null) {
             this.removeAll();
             int xPos = 100;
             int yPos = 50;
-            g2D.drawString(rulesForChessPuzzles(), 135, 15);
+            setCenteredWidth(rulesForChessPuzzles(), fontMetrics);
+            g2D.drawString(flexibleString, xCenteredValue, 15);
             g2D.setFont(myFont);
-            g2D.drawString(puzzles.get(randomIndex).getQuestion(), xPos + 310, yPos + 15);
+            setCenteredWidth(puzzles.get(randomIndex).getQuestion(), fontMetrics);
+            g2D.drawString(flexibleString, xCenteredValue, yPos + 15);
             g2D.drawImage(chessPuzzle, xPos + 200, yPos + 30, null);
             chessPuzzle = null;
             createSubmitButtonAndTextField();
         } else if (riddle != null) {
             this.removeAll();
             g2D.setFont(myFont);
-            g2D.drawString(riddle, 0, 55);
+            setCenteredWidth(riddle, fontMetrics);
+            g2D.drawString(flexibleString, xCenteredValue, 55);
             riddle = null;
             createSubmitButtonAndTextField();
         } else if (solvingRn) {
             g2D.drawImage(backgroundImg, 0, 0, null);
+            solvingRn = false;
+            waiting(3000);
         } else {
             g2D.drawImage(backgroundImg, 0, 0, null);
             g2D.drawString("You", startX + 13, startY - 5);
@@ -187,11 +211,26 @@ public class MyPanel extends JPanel implements ActionListener {
         }
     }
 
-    public void hideButtons() {
-        leftDoor.setVisible(false);
-        leftVent.setVisible(false);
-        rightVent.setVisible(false);
-        rightDoor.setVisible(false);
+    public void waiting(int milliSeconds) {
+        timerSetting(milliSeconds, true);
+        timer.start();
+    }
+
+    public Integer centerAString(int pixelLength) {
+        int x;
+        x = (PANEL_WIDTH - pixelLength) / 2;
+        return x;
+    }
+
+    public void nextFloorOrBackToFloor() {
+        timer.stop();
+        if (solved) {
+            mf.setCurrentFloor(2);
+            layoutSetting();
+        } else {
+            mf.setCurrentFloor(1);
+            layoutSetting();
+        }
     }
 
     public void animate(int startX, int startY, int endX, int endY) {
@@ -199,6 +238,7 @@ public class MyPanel extends JPanel implements ActionListener {
         this.startY = startY;
         this.endX = endX;
         this.endY = endY;
+        timerSetting(animationDuration / numFrames, false);
         timer.start();
     }
 
@@ -211,7 +251,7 @@ public class MyPanel extends JPanel implements ActionListener {
     public void loadChessPuzzle() { //https://chessfox.com/chess-puzzles-for-intermediate-players/
         puzzles.add(new Puzzles(new ImageIcon("ChessPuzzleImg/chessPuzzle1.png").getImage(), "where will you get material advantage (white on turn)", "Rf7"));
         puzzles.add(new Puzzles(new ImageIcon("ChessPuzzleImg/chessPuzzle2.png").getImage(), "where will you get material advantage threatening a mate (black on turn)", "Dh5"));
-        puzzles.add(new Puzzles(new ImageIcon("ChessPuzzleImg/chessPuzzle3.png").getImage(), "how many moves tilla mate? (white on turn)", "2"));
+        puzzles.add(new Puzzles(new ImageIcon("ChessPuzzleImg/chessPuzzle3.png").getImage(), "how many moves till a mate? (white on turn)", "2"));
         puzzles.add(new Puzzles(new ImageIcon("ChessPuzzleImg/chessPuzzle4.png").getImage(), "whats the best move here? (black on turn)", "Dh4"));
         puzzles.add(new Puzzles(new ImageIcon("ChessPuzzleImg/chessPuzzle5.png").getImage(), "where will you move the bishop? (black on turn)", "Bb2"));
         puzzles.add(new Puzzles(new ImageIcon("ChessPuzzleImg/chessPuzzle6.png").getImage(), "how many moves till mate? (white on move)", "2"));
@@ -240,11 +280,11 @@ public class MyPanel extends JPanel implements ActionListener {
     }
 
     public void loadRiddle() {
-        riddles.add(new Riddles("What is something that you earn, but can" + "\n" + " also save and spend?", "money"));
-        riddles.add(new Riddles("What is something that can grow over time," + "\n" + " but needs to be managed carefully?", "investments"));
-        riddles.add(new Riddles("What is something that can protect you from" + "\n" + " unexpected financial emergencies?", "insurance"));
-        riddles.add(new Riddles("What is something that you must do regularly" + "\n" + " to keep track of your income and expenses?", "budgeting"));
-        riddles.add(new Riddles("What is something that can help you achieve" + "\n" + " your financial goals, but requires patience and discipline?", "saving"));
+        riddles.add(new Riddles("What is something that you earn, but can also save and spend?", "money"));
+        riddles.add(new Riddles("What is something that can grow over time, but needs to be managed carefully?", "investments"));
+        riddles.add(new Riddles("What is something that can protect you from unexpected financial emergencies?", "insurance"));
+        riddles.add(new Riddles("What is something that you must do regularly to keep track of your income and expenses?", "budgeting"));
+        riddles.add(new Riddles("What is something that can help you achieve your financial goals, but requires patience and discipline?", "saving"));
     }
 
     @Override
@@ -325,16 +365,18 @@ public class MyPanel extends JPanel implements ActionListener {
         submitButton.setBackground(Color.BLACK);
         this.add(createButton("Submit", 465, 555, submitButton));
         this.add(answerField);
-        randomIndex = rd.nextInt(correctAr.size()-1);
+        randomIndex = rd.nextInt(correctAr.size() - 1);
         submitButton.addActionListener(e -> {
             String answer = answerField.getText();
             if (Objects.equals(this.answer, answer)) {
                 this.removeAll();
                 createBackground(correctAr.get(randomIndex));
+                solved = true;
                 repaint();
             } else {
                 this.removeAll();
                 createBackground(incorrectAr.get(randomIndex));
+                solved = false;
                 repaint();
             }
         });

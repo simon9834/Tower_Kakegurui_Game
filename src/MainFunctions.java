@@ -1,3 +1,5 @@
+import java.awt.*;
+
 public class MainFunctions {
 
     private int currentFloor = 1;

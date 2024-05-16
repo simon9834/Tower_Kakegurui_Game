@@ -30,7 +30,7 @@ public class MyPanel extends JPanel implements ActionListener {
     private String riddle, answer, puzzleText, flexibleString;
     private PlayerStats ps = new PlayerStats();
     private final int numFrames = 50 + (100 - ps.getStamina());
-    private MainFunctions mf;
+    private MainFunctions mf = new MainFunctions();
     private Random rd;
 
     public void my1floorPanel() {
@@ -40,7 +40,7 @@ public class MyPanel extends JPanel implements ActionListener {
         rightVent = createButton("Right Vent", 632, 147, rightVent);
         centerDoor = createButton("Center Door", 500, 450, centerDoor);
         addButtons(leftDoor, leftVent, rightDoor, rightVent, centerDoor);
-        createBackground("1stFloor.jpg");
+        createBackground("Floors/1stFloor.jpg");
         createPlayer();
         this.setVisible(true);
         repaint();
@@ -52,7 +52,7 @@ public class MyPanel extends JPanel implements ActionListener {
         leftVent = createButton("Left Vent", 200, 436, leftVent);
         rightVent = createButton("Right Vent", 632, 147, rightVent);
         addButtons(leftDoor, leftVent, rightDoor, rightVent, centerDoor);
-        createBackground("2stFloor.png");
+        createBackground("Floors/2stFloor.png");
         createPlayer();
         this.setVisible(true);
         repaint();
@@ -125,7 +125,6 @@ public class MyPanel extends JPanel implements ActionListener {
     public void layoutSetting() {
         this.setLayout(null);
         this.setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
-        mf = new MainFunctions();
         switch (mf.getCurrentFloor()) {
             case 1 -> my1floorPanel();
             case 2 -> my2floorPanel();
@@ -185,8 +184,8 @@ public class MyPanel extends JPanel implements ActionListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         g2D = (Graphics2D) g;
-        FontMetrics fontMetrics = g2D.getFontMetrics();
         Font myFont = new Font("Arial", Font.BOLD, 20);
+        FontMetrics fontMetrics = g2D.getFontMetrics(this.myFont);
         if (chessPuzzle != null) {
             this.removeAll();
             int xPos = 100;
@@ -197,8 +196,8 @@ public class MyPanel extends JPanel implements ActionListener {
             setCenteredWidth(puzzles.get(randomIndex).getQuestion(), fontMetrics, myFont);
             g2D.drawString(flexibleString, xCenteredValue, yPos + 15);
             g2D.drawImage(chessPuzzle, xPos + 200, yPos + 30, null);
-            chessPuzzle = null;
             createSubmitButtonAndTextField();
+            chessPuzzle = null;
         } else if (riddle != null) {
             this.removeAll();
             g2D.setFont(myFont);
@@ -235,7 +234,6 @@ public class MyPanel extends JPanel implements ActionListener {
             mf.setCurrentFloor(2);
             layoutSetting();
         } else {
-            mf.setCurrentFloor(1);
             layoutSetting();
         }
     }
@@ -311,7 +309,7 @@ public class MyPanel extends JPanel implements ActionListener {
             actionWhere = "rightVent";
             animate(startX, startY, rightVent.getX(), rightVent.getY());
         } else if (e.getSource() == centerDoor) {
-            actionWhere = "rightVent";
+            actionWhere = "centerDoor";
             animate(startX, startY, centerDoor.getX(), centerDoor.getY());
         } else if (e.getSource() == timer) {
             deltaX = (endX - startX) / numFrames;

@@ -171,24 +171,27 @@ public class MyPanel extends JPanel implements ActionListener {
         button.setBounds(x, y, 70, 30);
     }
 
-    public void setCenteredWidth(String string, FontMetrics fm) {
+    public void setCenteredWidth(String string, FontMetrics fm, Font font) {
+        if(font != this.myFont){
+            fm = g2D.getFontMetrics(font);
+        }
         flexibleString = string;
         xCenteredValue = centerAString(fm.stringWidth(string));
     }
-
+    private Graphics2D g2D;
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        Graphics2D g2D = (Graphics2D) g;
+        g2D = (Graphics2D) g;
         FontMetrics fontMetrics = g2D.getFontMetrics();
         Font myFont = new Font("Arial", Font.BOLD, 20);
         if (chessPuzzle != null) {
             this.removeAll();
             int xPos = 100;
             int yPos = 50;
-            setCenteredWidth(rulesForChessPuzzles(), fontMetrics);
+            setCenteredWidth(rulesForChessPuzzles(), fontMetrics, this.myFont);
             g2D.drawString(flexibleString, xCenteredValue, 15);
             g2D.setFont(myFont);
-            setCenteredWidth(puzzles.get(randomIndex).getQuestion(), fontMetrics);
+            setCenteredWidth(puzzles.get(randomIndex).getQuestion(), fontMetrics, myFont);
             g2D.drawString(flexibleString, xCenteredValue, yPos + 15);
             g2D.drawImage(chessPuzzle, xPos + 200, yPos + 30, null);
             chessPuzzle = null;
@@ -196,7 +199,7 @@ public class MyPanel extends JPanel implements ActionListener {
         } else if (riddle != null) {
             this.removeAll();
             g2D.setFont(myFont);
-            setCenteredWidth(riddle, fontMetrics);
+            setCenteredWidth(riddle, fontMetrics, myFont);
             g2D.drawString(flexibleString, xCenteredValue, 55);
             riddle = null;
             createSubmitButtonAndTextField();
@@ -220,6 +223,7 @@ public class MyPanel extends JPanel implements ActionListener {
         int x;
         x = (PANEL_WIDTH - pixelLength) / 2;
         return x;
+
     }
 
     public void nextFloorOrBackToFloor() {

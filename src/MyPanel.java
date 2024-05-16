@@ -12,7 +12,8 @@ import java.util.Random;
 
 public class MyPanel extends JPanel implements ActionListener {
     private JButton rightVent = new JButton(),
-            leftVent = new JButton(), rightDoor = new JButton(), leftDoor = new JButton();
+            leftVent = new JButton(), rightDoor = new JButton(),
+            leftDoor = new JButton(), centerDoor = new JButton();
     private JTextField answerField;
     private JButton submitButton;
     private boolean solvingRn, solved;
@@ -37,7 +38,8 @@ public class MyPanel extends JPanel implements ActionListener {
         rightDoor = createButton("Right Door", 900, 250, rightDoor);
         leftVent = createButton("Left Vent", 200, 436, leftVent);
         rightVent = createButton("Right Vent", 632, 147, rightVent);
-        addButtons(leftDoor, leftVent, rightDoor, rightVent);
+        centerDoor = createButton("Center Door", 500, 450, centerDoor);
+        addButtons(leftDoor, leftVent, rightDoor, rightVent, centerDoor);
         createBackground("1stFloor.jpg");
         createPlayer();
         this.setVisible(true);
@@ -49,7 +51,7 @@ public class MyPanel extends JPanel implements ActionListener {
         rightDoor = createButton("Right Door", 900, 250, rightDoor);
         leftVent = createButton("Left Vent", 200, 436, leftVent);
         rightVent = createButton("Right Vent", 632, 147, rightVent);
-        addButtons(leftDoor, leftVent, rightDoor, rightVent);
+        addButtons(leftDoor, leftVent, rightDoor, rightVent, centerDoor);
         createBackground("2stFloor.png");
         createPlayer();
         this.setVisible(true);
@@ -89,11 +91,12 @@ public class MyPanel extends JPanel implements ActionListener {
         repaint();
     }//isnt finished
 
-    public void addButtons(JButton button1, JButton button2, JButton button3, JButton button4) {
+    public void addButtons(JButton button1, JButton button2, JButton button3, JButton button4, JButton button5) {
         this.add(button1);
         this.add(button2);
         this.add(button3);
         this.add(button4);
+        this.add(button5);
     }
 
     public void createPlayer() {
@@ -161,7 +164,7 @@ public class MyPanel extends JPanel implements ActionListener {
         button.setText(text);
         button.setBackground(Color.BLACK);
         button.setForeground(Color.WHITE);
-        button.setBounds(x, y, 70, 30);
+        button.setBounds(x, y, 85, 35);
         button.addActionListener(this);
         button.setVisible(true);
         return button;
@@ -307,6 +310,9 @@ public class MyPanel extends JPanel implements ActionListener {
         } else if (e.getSource() == rightVent) {
             actionWhere = "rightVent";
             animate(startX, startY, rightVent.getX(), rightVent.getY());
+        } else if (e.getSource() == centerDoor) {
+            actionWhere = "rightVent";
+            animate(startX, startY, centerDoor.getX(), centerDoor.getY());
         } else if (e.getSource() == timer) {
             deltaX = (endX - startX) / numFrames;
             deltaY = (endY - startY) / numFrames;

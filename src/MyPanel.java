@@ -372,7 +372,7 @@ public class MyPanel extends JPanel implements ActionListener {
         randomIndex = rd.nextInt(correctAr.size() - 1);
         submitButton.addActionListener(e -> {
             String answer = answerField.getText();
-            if (Objects.equals(this.answer, answer)) {
+            if (Objects.equals(this.answer.toLowerCase().replaceAll("\\s+", ""), answer.toLowerCase().replaceAll("\\s+", ""))) {
                 this.removeAll();
                 createBackground(correctAr.get(randomIndex));
                 solved = true;

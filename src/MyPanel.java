@@ -4,8 +4,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.image.BaseMultiResolutionImage;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Random;
@@ -168,47 +166,55 @@ public class MyPanel extends JPanel implements ActionListener {
         button.setVisible(true);
         return button;
     }
+    public Integer centerAButtonX(JButton button){
+        return (int)((PANEL_WIDTH - button.getBounds().getWidth())/2);
+    }
+    public Integer centerATextFieldX(){
+        return (PANEL_WIDTH - 100)/2;
+    }
 
     private void changePosition(JButton button, int x, int y) {
         button.setBounds(x, y, 70, 30);
     }
 
-    public void setCenteredWidth(String string, FontMetrics fm, Font font) {
-        if(font != this.myFont){
-            fm = g2D.getFontMetrics(font);
+    public void setCenteredWidth(String string, boolean biggerFont) {
+        if(biggerFont){
+            myFont = new Font("Arial", Font.BOLD, 20);
+        }else{
+            myFont = new Font("Arial", Font.BOLD, 8);
         }
+        FontMetrics fm1 = g2D.getFontMetrics(myFont);
         flexibleString = string;
-        xCenteredValue = centerAString(fm.stringWidth(string));
+        xCenteredValue = centerAString(fm1.stringWidth(flexibleString));
+        myFont = new Font("Arial", Font.BOLD, 8);
     }
     private Graphics2D g2D;
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         g2D = (Graphics2D) g;
-        Font myFont = new Font("Arial", Font.BOLD, 20);
-        FontMetrics fontMetrics = g2D.getFontMetrics(this.myFont);
+        boolean biggerFont;
+        Font myFont1 = new Font("Arial", Font.BOLD, 20);
         if (chessPuzzle != null) {
             this.removeAll();
-            int xPos = 100;
-            int yPos = 50;
-            setCenteredWidth(rulesForChessPuzzles(), fontMetrics, this.myFont);
+            setCenteredWidth(rulesForChessPuzzles(), false);
             g2D.drawString(flexibleString, xCenteredValue, 15);
-            g2D.setFont(myFont);
-            setCenteredWidth(puzzles.get(randomIndex).getQuestion(), fontMetrics, myFont);
-            g2D.drawString(flexibleString, xCenteredValue, yPos + 15);
-            g2D.drawImage(chessPuzzle, xPos + 200, yPos + 30, null);
+            g2D.setFont(myFont1);
+            setCenteredWidth(puzzles.get(randomIndex).getQuestion(), true);
+            g2D.drawString(flexibleString, xCenteredValue, 65);
+            g2D.drawImage(chessPuzzle, 300, 80, null);
             createSubmitButtonAndTextField();
             chessPuzzle = null;
         } else if (riddle != null) {
             this.removeAll();
-            g2D.setFont(myFont);
-            setCenteredWidth(riddle, fontMetrics, myFont);
+            g2D.setFont(myFont1);
+            setCenteredWidth(riddle, true);
             g2D.drawString(flexibleString, xCenteredValue, 55);
             riddle = null;
             createSubmitButtonAndTextField();
         } else if (solvingRn) {
             g2D.drawImage(backgroundImg, 0, 0, null);
             solvingRn = false;
-            waiting(3000);
+            waiting(2799);
         } else {
             g2D.drawImage(backgroundImg, 0, 0, null);
             g2D.drawString("You", startX + 13, startY - 5);
@@ -222,10 +228,7 @@ public class MyPanel extends JPanel implements ActionListener {
     }
 
     public Integer centerAString(int pixelLength) {
-        int x;
-        x = (PANEL_WIDTH - pixelLength) / 2;
-        return x;
-
+        return (PANEL_WIDTH - pixelLength) / 2;
     }
 
     public void nextFloorOrBackToFloor() {
@@ -331,14 +334,6 @@ public class MyPanel extends JPanel implements ActionListener {
         }
     }
 
-    public String getActionWhere() {
-        return actionWhere;
-    }
-
-    public void setActionWhere(String actionWhere) {
-        this.actionWhere = actionWhere;
-    }
-
     public void fillCorrectIncorrect() {
         correctAr.add("Correct/correct - obama.htm");
         correctAr.add("Correct/correct - profesor.jpg");
@@ -367,11 +362,13 @@ public class MyPanel extends JPanel implements ActionListener {
         fillCorrectIncorrect();
         answerField = new JTextField();
         answerField.setBackground(Color.LIGHT_GRAY);
-        Dimension dimForTextField = new Dimension(450, 500);
-        answerField.setBounds((int) dimForTextField.getWidth(), (int) dimForTextField.getHeight(), 100, 40);
+        answerField.setBounds(centerATextFieldX(), 500, 120, 40);
+        answerField.setVisible(true);
         submitButton = new JButton();
         submitButton.setBackground(Color.BLACK);
-        this.add(createButton("Submit", 465, 555, submitButton));
+        createButton("Submit", 465, 555, submitButton);
+        centerAButtonX(submitButton);
+        this.add(submitButton);
         this.add(answerField);
         randomIndex = rd.nextInt(correctAr.size() - 1);
         submitButton.addActionListener(e -> {

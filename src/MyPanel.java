@@ -1,9 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Random;
@@ -16,7 +13,9 @@ public class MyPanel extends JPanel implements ActionListener {
     private JButton submitButton;
     private boolean solvingRn, solved;
     private Font myFont = new Font("Arial", Font.BOLD, 8);
-    private final int PANEL_WIDTH = 1000, PANEL_HEIGHT = 600, animationDuration = 1000;
+    private int PANEL_WIDTH = 1000;
+    private int PANEL_HEIGHT = 600;
+    private final int animationDuration = 1000;
     private ArrayList<Riddles> riddles = new ArrayList<>();
     private ArrayList<Puzzles> puzzles = new ArrayList<>();
     private ArrayList<String> correctAr = new ArrayList<>();
@@ -30,6 +29,9 @@ public class MyPanel extends JPanel implements ActionListener {
     private final int numFrames = 50 + (100 - ps.getStamina());
     private MainFunctions mf = new MainFunctions();
     private Random rd;
+    //resizeable?
+    //Nová x-souřadnice = (721 / 1919) * 1000 ≈ 375,983
+    //Nová y-souřadnice = (684 / 1076) * 600 ≈ 382,278
 
     public void my1floorPanel() {
         leftDoor = createButton("Left Door", 40, 350, leftDoor);
@@ -37,37 +39,39 @@ public class MyPanel extends JPanel implements ActionListener {
         leftVent = createButton("Left Vent", 200, 436, leftVent);
         rightVent = createButton("Right Vent", 632, 147, rightVent);
         centerDoor = createButton("Center Door", 500, 450, centerDoor);
-        addButtons(leftDoor, leftVent, rightDoor, rightVent, centerDoor);
+        this.add(centerDoor);
+        addButtons(leftDoor, leftVent, rightDoor, rightVent);
         createBackground("Floors/1stFloor.jpg");
         createPlayer();
         this.setVisible(true);
         repaint();
-    }//is finished
+    }
 
     public void my2floorPanel() {
-        leftDoor = createButton("Left Door", 40, 350, leftDoor);
-        rightDoor = createButton("Right Door", 900, 250, rightDoor);
-        leftVent = createButton("Left Vent", 200, 436, leftVent);
-        rightVent = createButton("Right Vent", 632, 147, rightVent);
-        addButtons(leftDoor, leftVent, rightDoor, rightVent, centerDoor);
+        leftDoor = createButton("Left Door", 615,380, leftDoor);
+        rightDoor = createButton("Right Door", 910,463, rightDoor);
+        leftVent = createButton("Left Vent", 0,506, leftVent);
+        rightVent = createButton("Right Vent", 759,509, rightVent);
+        addButtons(leftDoor, leftVent, rightDoor, rightVent);
         createBackground("Floors/2stFloor.png");
         createPlayer();
         this.setVisible(true);
         repaint();
-    }//is finished
+    }
 
     public void my3floorPanel() {
-        changePosition(leftDoor, 626, 349);
-        changePosition(rightDoor, 969, 397);
-        changePosition(leftVent, 36, 470);
-        changePosition(rightVent, 747, 478);
-        createBackground("2stFloor.png");
+        leftDoor = createButton("Left Door", 5,404, leftDoor);
+        rightDoor = createButton("Right Door", 308,382, rightDoor);
+        leftVent = createButton("Left Vent", 214,513, leftVent);
+        rightVent = createButton("Right Vent", 910,507, rightVent);
+        addButtons(leftDoor, leftVent, rightDoor, rightVent);
+        createBackground("Floors/3thFloor.png");
         createPlayer();
         this.setVisible(true);
         repaint();
     }//isnt finished
 
-    public void my4floorPanel() {
+  /*  public void my4floorPanel() {
         changePosition(leftDoor, 626, 349);
         changePosition(rightDoor, 969, 397);
         changePosition(leftVent, 36, 470);
@@ -88,13 +92,14 @@ public class MyPanel extends JPanel implements ActionListener {
         this.setVisible(true);
         repaint();
     }//isnt finished
+    */
 
-    public void addButtons(JButton button1, JButton button2, JButton button3, JButton button4, JButton button5) {
+
+    public void addButtons(JButton button1, JButton button2, JButton button3, JButton button4) {
         this.add(button1);
         this.add(button2);
         this.add(button3);
         this.add(button4);
-        this.add(button5);
     }
 
     public void createPlayer() {
@@ -123,13 +128,27 @@ public class MyPanel extends JPanel implements ActionListener {
     public void layoutSetting() {
         this.setLayout(null);
         this.setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                Dimension newSize = getSize();
+                resizeGame(newSize.width, newSize.height);
+            }
+        });
         switch (mf.getCurrentFloor()) {
             case 1 -> my1floorPanel();
             case 2 -> my2floorPanel();
             case 3 -> my3floorPanel();
-            case 4 -> my4floorPanel();
-            case 5 -> my5floorPanel();
+           /* case 4 -> my4floorPanel();
+            case 5 -> my5floorPanel();*/
+
         }
+    }
+
+    private void resizeGame(int width, int height) {
+        PANEL_WIDTH = width;
+        PANEL_HEIGHT = height;
+        repaint();
     }
 
     public void timerSetting(int milliSecs, boolean waitingForFloor) {
@@ -173,10 +192,6 @@ public class MyPanel extends JPanel implements ActionListener {
         return (PANEL_WIDTH - 100)/2;
     }
 
-    private void changePosition(JButton button, int x, int y) {
-        button.setBounds(x, y, 70, 30);
-    }
-
     public void setCenteredWidth(String string, boolean biggerFont) {
         if(biggerFont){
             myFont = new Font("Arial", Font.BOLD, 20);
@@ -192,7 +207,6 @@ public class MyPanel extends JPanel implements ActionListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         g2D = (Graphics2D) g;
-        boolean biggerFont;
         Font myFont1 = new Font("Arial", Font.BOLD, 20);
         if (chessPuzzle != null) {
             this.removeAll();

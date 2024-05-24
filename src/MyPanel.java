@@ -229,7 +229,7 @@ public class MyPanel extends JPanel implements ActionListener {
             solvingRn = false;
             waiting(2799);
         } else {
-            g2D.drawImage(backgroundImg, 0, 0, null);
+            g2D.drawImage(backgroundImg, 0, 0, PANEL_WIDTH, PANEL_HEIGHT, this);
             g2D.drawString("You", startX + 13, startY - 5);
             g2D.drawImage(playerImg, startX, startY, null);
         }
@@ -384,6 +384,7 @@ public class MyPanel extends JPanel implements ActionListener {
         submitButton = new JButton();
         submitButton.setBackground(Color.BLACK);
         createButton("Submit", 465, 555, submitButton);
+        submitButton.set;//width
         centerAButtonX(submitButton);
         this.add(submitButton);
         this.add(answerField);

@@ -196,8 +196,7 @@ public class MyPanel extends JPanel implements ActionListener {
         Font myFont1 = new Font("Arial", Font.BOLD, 20);
         if (chessPuzzle != null) {
             this.removeAll();
-            setCenteredWidth(rulesForChessPuzzles(), false);
-            g2D.drawString(flexibleString, xCenteredValue, 15);
+            g2D.drawString(rulesForChessPuzzles(), 80, 15);
             g2D.setFont(myFont1);
             setCenteredWidth(puzzles.get(randomIndex).getQuestion(), true);
             g2D.drawString(flexibleString, xCenteredValue, 65);
@@ -335,7 +334,7 @@ public class MyPanel extends JPanel implements ActionListener {
     }
 
     public void fillCorrectIncorrect() {
-        correctAr.add("Correct/correct - obama.htm");
+        correctAr.add("Correct/correctCompet.jpg");
         correctAr.add("Correct/correct - profesor.jpg");
         correctAr.add("Correct/correct - pidižvík.jpg");
         correctAr.add("Correct/correct - minion.jpg");
@@ -344,6 +343,8 @@ public class MyPanel extends JPanel implements ActionListener {
         correctAr.add("Correct/correct - sigmaCat.png");
         correctAr.add("Correct/correct - competition.jpg");
         correctAr.add("Correct/ok boomer.jpg");
+        correctAr.add("Correct/correctJesus.jpg");
+        correctAr.add("Correct/correctBrain.png");
 
         incorrectAr.add("Incorrect/incorrect - face.jpg");
         incorrectAr.add("Incorrect/incorrect - boss.jpg");
@@ -351,9 +352,11 @@ public class MyPanel extends JPanel implements ActionListener {
         incorrectAr.add("Incorrect/incorrect - what da hail.jpg");
         incorrectAr.add("Incorrect/incorrect - obama.jpg");
         incorrectAr.add("Incorrect/incorrect - trump.jpg");
-        incorrectAr.add("Incorrect/incorrect - competition");
         incorrectAr.add("Incorrect/incorrect - tulen.jpg");
         incorrectAr.add("Incorrect/incorrect - catBath.jpg");
+        incorrectAr.add("Incorrect/dogIncorrect.jpg");
+        incorrectAr.add("Incorrect/incorrectBro.jpg");
+        incorrectAr.add("Incorrect/incorrectTeach.jpg");
     }
 
     public void createSubmitButtonAndTextField() {
@@ -362,7 +365,7 @@ public class MyPanel extends JPanel implements ActionListener {
         fillCorrectIncorrect();
         answerField = new JTextField();
         answerField.setBackground(Color.LIGHT_GRAY);
-        answerField.setBounds(centerATextFieldX(), 500, 120, 40);
+        answerField.setBounds(440, 500, 120, 40);
         answerField.setVisible(true);
         submitButton = new JButton();
         submitButton.setBackground(Color.BLACK);

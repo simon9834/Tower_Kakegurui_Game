@@ -45,8 +45,7 @@ public class MyPanel extends JPanel implements ActionListener {
         buttonsAr.add(leftVent);
         buttonsAr.add(rightVent);
         buttonsAr.add(centerDoor);
-        this.add(centerDoor);
-        addButtons(leftDoor, leftVent, rightDoor, rightVent);
+        addButtonsToFrame();
         createBackground("Floors/1stFloor.jpg");
         createPlayer();
         moveButtons();
@@ -64,7 +63,7 @@ public class MyPanel extends JPanel implements ActionListener {
         buttonsAr.add(rightDoor);
         buttonsAr.add(leftVent);
         buttonsAr.add(rightVent);
-        addButtons(leftDoor, leftVent, rightDoor, rightVent);
+        addButtonsToFrame();
         createBackground("Floors/2stFloor.png");
         createPlayer();
         moveButtons();
@@ -82,7 +81,7 @@ public class MyPanel extends JPanel implements ActionListener {
         buttonsAr.add(rightDoor);
         buttonsAr.add(leftVent);
         buttonsAr.add(rightVent);
-        addButtons(leftDoor, leftVent, rightDoor, rightVent);
+        addButtonsToFrame();
         createBackground("Floors/3thFloor.png");
         createPlayer();
         moveButtons();
@@ -114,15 +113,13 @@ public class MyPanel extends JPanel implements ActionListener {
     */
 
 
-    public void addButtons(JButton button1, JButton button2, JButton button3, JButton button4) {
-        this.add(button1);
-        this.add(button2);
-        this.add(button3);
-        this.add(button4);
-        button1.setLocation(button1.getX(), button1.getY());
-        button2.setLocation(button2.getX(), button2.getY());
-        button3.setLocation(button3.getX(), button3.getY());
-        button4.setLocation(button4.getX(), button4.getY());
+    public void addButtonsToFrame() {
+        int i = 0;
+        for (JButton ignored : buttonsAr) {
+            this.add(buttonsAr.get(i));
+            buttonsAr.get(i).setLocation(buttonsAr.get(i).getX(), buttonsAr.get(i).getY());
+            i++;
+        }
     }
 
     public void moveButtons() {
@@ -135,13 +132,19 @@ public class MyPanel extends JPanel implements ActionListener {
         }
         startX = (int) (((double) startX / PANEL_WIDTH_OLD) * PANEL_WIDTH);
         startY = (int) (((double) startY / PANEL_HEIGHT_OLD) * PANEL_HEIGHT);
-        PANEL_WIDTH_OLD = PANEL_WIDTH;
-        PANEL_HEIGHT_OLD = PANEL_HEIGHT;
+
         if (answerField != null) {
             x = (int) (((double) answerField.getX() / PANEL_WIDTH_OLD) * PANEL_WIDTH);
             y = (int) (((double) answerField.getY() / PANEL_HEIGHT_OLD) * PANEL_HEIGHT);
             answerField.setLocation(x, y);
         }
+        if (chessPuzzle != null) {
+            x = (int) (((double) chessPuzzle.getWidth(this) / PANEL_WIDTH_OLD) * PANEL_WIDTH);
+            y = (int) (((double) chessPuzzle.getHeight(this) / PANEL_HEIGHT_OLD) * PANEL_HEIGHT);
+            chessPuzzle = chessPuzzle.getScaledInstance(x, y, Image.SCALE_SMOOTH);
+        }
+        PANEL_WIDTH_OLD = PANEL_WIDTH;
+        PANEL_HEIGHT_OLD = PANEL_HEIGHT;
     }
 
 
@@ -176,7 +179,9 @@ public class MyPanel extends JPanel implements ActionListener {
             @Override
             public void componentResized(ComponentEvent e) {
                 Dimension newSize = getSize();
-                resizeGame(newSize.width, newSize.height);
+                if (newSize.width != PANEL_WIDTH_OLD || newSize.height != PANEL_HEIGHT_OLD) {
+                    resizeGame(newSize.width, newSize.height);
+                }
             }
         });
 
@@ -200,7 +205,7 @@ public class MyPanel extends JPanel implements ActionListener {
         }
     }
 
-    private JButton createButton(String text, int x, int y, JButton button, boolean centered) {
+    private void createButton(String text, int x, int y, JButton button, boolean centeredX) {
         button.setFont(myFont);
         button.addMouseListener(new MouseAdapter() {
             @Override
@@ -221,11 +226,10 @@ public class MyPanel extends JPanel implements ActionListener {
         button.setBounds(x, y, 85, 35);
         button.addActionListener(this);
         button.setVisible(true);
-        if (centered) {
+        if (centeredX) {
             int xNew = centerAButtonX(button);
             button.setBounds(xNew, y, 85, 35);
         }
-        return button;
     }
 
     public Integer centerAButtonX(JButton button) {
@@ -240,7 +244,7 @@ public class MyPanel extends JPanel implements ActionListener {
         if (biggerFont) {
             myFont = new Font("Arial", Font.BOLD, 20);
         } else {
-            myFont = new Font("Arial", Font.BOLD, 8);
+            myFont = new Font("Arial", Font.BOLD, 12);
         }
         FontMetrics fm1 = g2D.getFontMetrics(myFont);
         flexibleString = string;
@@ -254,14 +258,21 @@ public class MyPanel extends JPanel implements ActionListener {
         super.paintComponent(g);
         g2D = (Graphics2D) g;
         Font myFont1 = new Font("Arial", Font.BOLD, 20);
+        Font myFont = new Font("Arial", Font.BOLD, 12);
+
         if (chessPuzzle != null) {
             this.removeAll();
+            g2D.setFont(myFont);
+            g2D.setColor(Color.ORANGE);
+            g2D.fillRect(0, 0, PANEL_WIDTH, PANEL_HEIGHT - (5 * PANEL_HEIGHT / 6));
+            g2D.setColor(Color.BLACK);
             xCenteredValue = setCenteredWidth(rulesForChessPuzzles(), false);
-            g2D.drawString(rulesForChessPuzzles(), xCenteredValue, 15);
+            g2D.drawString(rulesForChessPuzzles(), xCenteredValue, PANEL_HEIGHT / 40);
             g2D.setFont(myFont1);
-            xCenteredValue = setCenteredWidth(puzzles.get(randomIndex).getQuestion(), true);
-            g2D.drawString(flexibleString, xCenteredValue, 65);
-            g2D.drawImage(chessPuzzle, (PANEL_WIDTH-chessPuzzle.getWidth(this))/2, 80, null);
+            g2D.setColor(Color.DARK_GRAY);
+            xCenteredValue = setCenteredWidth(riddle, true);
+            g2D.drawString(flexibleString, xCenteredValue, PANEL_HEIGHT / 9);
+            g2D.drawImage(chessPuzzle, (PANEL_WIDTH - chessPuzzle.getWidth(this)) / 2, PANEL_HEIGHT / 7, null);
             createSubmitButtonAndTextField();
         } else if (riddle != null) {
             this.removeAll();
@@ -331,6 +342,7 @@ public class MyPanel extends JPanel implements ActionListener {
         randomIndex = rd.nextInt(puzzles.size() - 1);
         chessPuzzle = puzzles.get(randomIndex).getImg().getScaledInstance(PANEL_HEIGHT - 200, PANEL_HEIGHT - 200, Image.SCALE_SMOOTH);
         chessPuzzle = new ImageIcon(chessPuzzle).getImage();
+        riddle = puzzles.get(randomIndex).getQuestion();
         answer = puzzles.get(randomIndex).getAnswer();
         repaint();
     }
@@ -426,11 +438,11 @@ public class MyPanel extends JPanel implements ActionListener {
         answerField.setBackground(Color.LIGHT_GRAY);
         answerField.setSize(120, 40);
         xNew = centerATextFieldX(answerField);
-        answerField.setBounds(xNew, PANEL_HEIGHT-100, 120, 40);
+        answerField.setBounds(xNew, PANEL_HEIGHT - 100, 120, 40);
         answerField.setVisible(true);
         submitButton = new JButton();
         submitButton.setBackground(Color.BLACK);
-        createButton("Submit", 0, PANEL_HEIGHT-45, submitButton, true);
+        createButton("Submit", 0, PANEL_HEIGHT - 45, submitButton, true);
         buttonsAr.add(submitButton);
         this.add(submitButton);
         this.add(answerField);

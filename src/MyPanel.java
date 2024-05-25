@@ -34,11 +34,11 @@ public class MyPanel extends JPanel implements ActionListener {
     //Nová y-souřadnice = (684 / 1076) * 600 ≈ 382,278
 
     public void my1floorPanel() {
-        leftDoor = createButton("Left Door", 40, 350, leftDoor);
-        rightDoor = createButton("Right Door", 900, 250, rightDoor);
-        leftVent = createButton("Left Vent", 200, 436, leftVent);
-        rightVent = createButton("Right Vent", 632, 147, rightVent);
-        centerDoor = createButton("Center Door", 500, 450, centerDoor);
+        leftDoor = createButton("Left Door", 40, 350, leftDoor, false);
+        rightDoor = createButton("Right Door", 900, 250, rightDoor, false);
+        leftVent = createButton("Left Vent", 200, 436, leftVent, false);
+        rightVent = createButton("Right Vent", 632, 147, rightVent, false);
+        centerDoor = createButton("Center Door", 500, 450, centerDoor, false);
         this.add(centerDoor);
         addButtons(leftDoor, leftVent, rightDoor, rightVent);
         createBackground("Floors/1stFloor.jpg");
@@ -48,10 +48,10 @@ public class MyPanel extends JPanel implements ActionListener {
     }
 
     public void my2floorPanel() {
-        leftDoor = createButton("Left Door", 615,380, leftDoor);
-        rightDoor = createButton("Right Door", 910,463, rightDoor);
-        leftVent = createButton("Left Vent", 0,506, leftVent);
-        rightVent = createButton("Right Vent", 759,509, rightVent);
+        leftDoor = createButton("Left Door", 615,380, leftDoor, false);
+        rightDoor = createButton("Right Door", 910,463, rightDoor, false);
+        leftVent = createButton("Left Vent", 0,506, leftVent, false);
+        rightVent = createButton("Right Vent", 759,509, rightVent, false);
         addButtons(leftDoor, leftVent, rightDoor, rightVent);
         createBackground("Floors/2stFloor.png");
         createPlayer();
@@ -60,10 +60,10 @@ public class MyPanel extends JPanel implements ActionListener {
     }
 
     public void my3floorPanel() {
-        leftDoor = createButton("Left Door", 5,404, leftDoor);
-        rightDoor = createButton("Right Door", 308,382, rightDoor);
-        leftVent = createButton("Left Vent", 214,513, leftVent);
-        rightVent = createButton("Right Vent", 910,507, rightVent);
+        leftDoor = createButton("Left Door", 5,404, leftDoor, false);
+        rightDoor = createButton("Right Door", 308,382, rightDoor, false);
+        leftVent = createButton("Left Vent", 214,513, leftVent, false);
+        rightVent = createButton("Right Vent", 910,507, rightVent, false);
         addButtons(leftDoor, leftVent, rightDoor, rightVent);
         createBackground("Floors/3thFloor.png");
         createPlayer();
@@ -162,7 +162,7 @@ public class MyPanel extends JPanel implements ActionListener {
         }
     }
 
-    private JButton createButton(String text, int x, int y, JButton button) {
+    private JButton createButton(String text, int x, int y, JButton button, boolean centered) {
         button.setFont(myFont);
         button.addMouseListener(new MouseAdapter() {
             @Override
@@ -183,6 +183,10 @@ public class MyPanel extends JPanel implements ActionListener {
         button.setBounds(x, y, 85, 35);
         button.addActionListener(this);
         button.setVisible(true);
+        if(centered) {
+            int xNew = centerAButtonX(button);
+            button.setBounds(xNew, y, 85, 35);
+        }
         return button;
     }
     public Integer centerAButtonX(JButton button){
@@ -383,9 +387,7 @@ public class MyPanel extends JPanel implements ActionListener {
         answerField.setVisible(true);
         submitButton = new JButton();
         submitButton.setBackground(Color.BLACK);
-        createButton("Submit", 465, 555, submitButton);
-        submitButton.set;//width
-        centerAButtonX(submitButton);
+        createButton("Submit", 0, 555, submitButton, true);
         this.add(submitButton);
         this.add(answerField);
         randomIndex = rd.nextInt(correctAr.size() - 1);

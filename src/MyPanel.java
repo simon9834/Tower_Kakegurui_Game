@@ -15,7 +15,7 @@ public class MyPanel extends JPanel implements ActionListener {
     private Font myFont = new Font("Arial", Font.BOLD, 8);
     private int PANEL_WIDTH = 1000;
     private int PANEL_WIDTH_OLD = 1000;
-    private int PANEL_HEIGHT_OLD = 1000;
+    private int PANEL_HEIGHT_OLD = 600;
     private int PANEL_HEIGHT = 600;
     private final int animationDuration = 1000;
     private ArrayList<Riddles> riddles = new ArrayList<>();
@@ -35,11 +35,11 @@ public class MyPanel extends JPanel implements ActionListener {
 
     public void my1floorPanel() {
         buttonsAr.clear();
-        createButton("Left Door", 40, 350, leftDoor, false);
-        createButton("Right Door", 900, 250, rightDoor, false);
-        createButton("Left Vent", 200, 436, leftVent, false);
-        createButton("Right Vent", 632, 147, rightVent, false);
-        createButton("Center Door", 500, 450, centerDoor, false);
+        createButton("Left Door", 80, 350, leftDoor, false);
+        createButton("Right Door", 900, 260, rightDoor, false);
+        createButton("Left Vent", 185, 450, leftVent, false);
+        createButton("Right Vent", 632, 150, rightVent, false);
+        createButton("Center Door", 550, 420, centerDoor, false);
         buttonsAr.add(leftDoor);
         buttonsAr.add(rightDoor);
         buttonsAr.add(leftVent);
@@ -49,6 +49,7 @@ public class MyPanel extends JPanel implements ActionListener {
         addButtons(leftDoor, leftVent, rightDoor, rightVent);
         createBackground("Floors/1stFloor.jpg");
         createPlayer();
+        moveButtons();
         this.setVisible(true);
         repaint();
     }
@@ -66,6 +67,7 @@ public class MyPanel extends JPanel implements ActionListener {
         addButtons(leftDoor, leftVent, rightDoor, rightVent);
         createBackground("Floors/2stFloor.png");
         createPlayer();
+        moveButtons();
         this.setVisible(true);
         repaint();
     }
@@ -83,6 +85,7 @@ public class MyPanel extends JPanel implements ActionListener {
         addButtons(leftDoor, leftVent, rightDoor, rightVent);
         createBackground("Floors/3thFloor.png");
         createPlayer();
+        moveButtons();
         this.setVisible(true);
         repaint();
     }
@@ -122,7 +125,7 @@ public class MyPanel extends JPanel implements ActionListener {
         button4.setLocation(button4.getX(), button4.getY());
     }
 
-    public void resizeButtons() {
+    public void moveButtons() {
         int x;
         int y;
         for (JButton jButton : buttonsAr) {
@@ -134,7 +137,13 @@ public class MyPanel extends JPanel implements ActionListener {
         startY = (int) (((double) startY / PANEL_HEIGHT_OLD) * PANEL_HEIGHT);
         PANEL_WIDTH_OLD = PANEL_WIDTH;
         PANEL_HEIGHT_OLD = PANEL_HEIGHT;
+        if (answerField != null) {
+            x = (int) (((double) answerField.getX() / PANEL_WIDTH_OLD) * PANEL_WIDTH);
+            y = (int) (((double) answerField.getY() / PANEL_HEIGHT_OLD) * PANEL_HEIGHT);
+            answerField.setLocation(x, y);
+        }
     }
+
 
     public void createPlayer() {
         playerImg = new ImageIcon("playerIcon.png").getImage();
@@ -176,7 +185,7 @@ public class MyPanel extends JPanel implements ActionListener {
     private void resizeGame(int width, int height) {
         PANEL_WIDTH = width;
         PANEL_HEIGHT = height;
-        //resizeButtons();
+        moveButtons();
         repaint();
     }
 
@@ -252,7 +261,7 @@ public class MyPanel extends JPanel implements ActionListener {
             g2D.setFont(myFont1);
             xCenteredValue = setCenteredWidth(puzzles.get(randomIndex).getQuestion(), true);
             g2D.drawString(flexibleString, xCenteredValue, 65);
-            g2D.drawImage(chessPuzzle, 300, 80, null);
+            g2D.drawImage(chessPuzzle, (PANEL_WIDTH-chessPuzzle.getWidth(this))/2, 80, null);
             createSubmitButtonAndTextField();
         } else if (riddle != null) {
             this.removeAll();
@@ -415,13 +424,14 @@ public class MyPanel extends JPanel implements ActionListener {
         fillCorrectIncorrect();
         answerField = new JTextField();
         answerField.setBackground(Color.LIGHT_GRAY);
-        answerField.setBounds(0, 500, 120, 40);
+        answerField.setSize(120, 40);
         xNew = centerATextFieldX(answerField);
-        answerField.setBounds(xNew, 500, 120, 40);
+        answerField.setBounds(xNew, PANEL_HEIGHT-100, 120, 40);
         answerField.setVisible(true);
         submitButton = new JButton();
         submitButton.setBackground(Color.BLACK);
-        createButton("Submit", 0, 555, submitButton, true);
+        createButton("Submit", 0, PANEL_HEIGHT-45, submitButton, true);
+        buttonsAr.add(submitButton);
         this.add(submitButton);
         this.add(answerField);
         randomIndex = rd.nextInt(correctAr.size() - 1);

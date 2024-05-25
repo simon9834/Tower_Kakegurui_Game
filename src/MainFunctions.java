@@ -2,7 +2,7 @@ import java.awt.*;
 
 public class MainFunctions {
 
-    private int currentFloor = 3;
+    private int currentFloor = 1;
 
 
     public boolean checkAnswer(String answer) {

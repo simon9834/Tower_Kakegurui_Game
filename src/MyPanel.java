@@ -14,31 +14,37 @@ public class MyPanel extends JPanel implements ActionListener {
     private boolean solvingRn, solved;
     private Font myFont = new Font("Arial", Font.BOLD, 8);
     private int PANEL_WIDTH = 1000;
+    private int PANEL_WIDTH_OLD = 1000;
+    private int PANEL_HEIGHT_OLD = 1000;
     private int PANEL_HEIGHT = 600;
     private final int animationDuration = 1000;
     private ArrayList<Riddles> riddles = new ArrayList<>();
     private ArrayList<Puzzles> puzzles = new ArrayList<>();
     private ArrayList<String> correctAr = new ArrayList<>();
     private ArrayList<String> incorrectAr = new ArrayList<>();
+    private ArrayList<JButton> buttonsAr = new ArrayList<>();
     private String actionWhere;
     private Image playerImg, backgroundImg, chessPuzzle;
     private Timer timer;
     private int endX, endY, randomIndex, startX = 700, startY = 500, xCenteredValue;
-    private String riddle, answer, puzzleText, flexibleString;
+    private String riddle, answer, flexibleString;
     private PlayerStats ps = new PlayerStats();
     private final int numFrames = 50 + (100 - ps.getStamina());
     private MainFunctions mf = new MainFunctions();
     private Random rd;
-    //resizeable?
-    //Nová x-souřadnice = (721 / 1919) * 1000 ≈ 375,983
-    //Nová y-souřadnice = (684 / 1076) * 600 ≈ 382,278
 
     public void my1floorPanel() {
-        leftDoor = createButton("Left Door", 40, 350, leftDoor, false);
-        rightDoor = createButton("Right Door", 900, 250, rightDoor, false);
-        leftVent = createButton("Left Vent", 200, 436, leftVent, false);
-        rightVent = createButton("Right Vent", 632, 147, rightVent, false);
-        centerDoor = createButton("Center Door", 500, 450, centerDoor, false);
+        buttonsAr.clear();
+        createButton("Left Door", 40, 350, leftDoor, false);
+        createButton("Right Door", 900, 250, rightDoor, false);
+        createButton("Left Vent", 200, 436, leftVent, false);
+        createButton("Right Vent", 632, 147, rightVent, false);
+        createButton("Center Door", 500, 450, centerDoor, false);
+        buttonsAr.add(leftDoor);
+        buttonsAr.add(rightDoor);
+        buttonsAr.add(leftVent);
+        buttonsAr.add(rightVent);
+        buttonsAr.add(centerDoor);
         this.add(centerDoor);
         addButtons(leftDoor, leftVent, rightDoor, rightVent);
         createBackground("Floors/1stFloor.jpg");
@@ -48,10 +54,15 @@ public class MyPanel extends JPanel implements ActionListener {
     }
 
     public void my2floorPanel() {
-        leftDoor = createButton("Left Door", 615,380, leftDoor, false);
-        rightDoor = createButton("Right Door", 910,463, rightDoor, false);
-        leftVent = createButton("Left Vent", 0,506, leftVent, false);
-        rightVent = createButton("Right Vent", 759,509, rightVent, false);
+        buttonsAr.clear();
+        createButton("Left Door", 615, 380, leftDoor, false);
+        createButton("Right Door", 910, 463, rightDoor, false);
+        createButton("Left Vent", 0, 506, leftVent, false);
+        createButton("Right Vent", 759, 509, rightVent, false);
+        buttonsAr.add(leftDoor);
+        buttonsAr.add(rightDoor);
+        buttonsAr.add(leftVent);
+        buttonsAr.add(rightVent);
         addButtons(leftDoor, leftVent, rightDoor, rightVent);
         createBackground("Floors/2stFloor.png");
         createPlayer();
@@ -60,16 +71,21 @@ public class MyPanel extends JPanel implements ActionListener {
     }
 
     public void my3floorPanel() {
-        leftDoor = createButton("Left Door", 5,404, leftDoor, false);
-        rightDoor = createButton("Right Door", 308,382, rightDoor, false);
-        leftVent = createButton("Left Vent", 214,513, leftVent, false);
-        rightVent = createButton("Right Vent", 910,507, rightVent, false);
+        buttonsAr.clear();
+        createButton("Left Door", 5, 404, leftDoor, false);
+        createButton("Right Door", 308, 382, rightDoor, false);
+        createButton("Left Vent", 214, 513, leftVent, false);
+        createButton("Right Vent", 910, 507, rightVent, false);
+        buttonsAr.add(leftDoor);
+        buttonsAr.add(rightDoor);
+        buttonsAr.add(leftVent);
+        buttonsAr.add(rightVent);
         addButtons(leftDoor, leftVent, rightDoor, rightVent);
         createBackground("Floors/3thFloor.png");
         createPlayer();
         this.setVisible(true);
         repaint();
-    }//isnt finished
+    }
 
   /*  public void my4floorPanel() {
         changePosition(leftDoor, 626, 349);
@@ -100,6 +116,24 @@ public class MyPanel extends JPanel implements ActionListener {
         this.add(button2);
         this.add(button3);
         this.add(button4);
+        button1.setLocation(button1.getX(), button1.getY());
+        button2.setLocation(button2.getX(), button2.getY());
+        button3.setLocation(button3.getX(), button3.getY());
+        button4.setLocation(button4.getX(), button4.getY());
+    }
+
+    public void resizeButtons() {
+        int x;
+        int y;
+        for (JButton jButton : buttonsAr) {
+            x = (int) (((double) jButton.getX() / PANEL_WIDTH_OLD) * PANEL_WIDTH);
+            y = (int) (((double) jButton.getY() / PANEL_HEIGHT_OLD) * PANEL_HEIGHT);
+            jButton.setLocation(x, y);
+        }
+        startX = (int) (((double) startX / PANEL_WIDTH_OLD) * PANEL_WIDTH);
+        startY = (int) (((double) startY / PANEL_HEIGHT_OLD) * PANEL_HEIGHT);
+        PANEL_WIDTH_OLD = PANEL_WIDTH;
+        PANEL_HEIGHT_OLD = PANEL_HEIGHT;
     }
 
     public void createPlayer() {
@@ -114,13 +148,6 @@ public class MyPanel extends JPanel implements ActionListener {
         backgroundImg = new ImageIcon(backgroundImg).getImage();
     }
 
-    public Image createImage(Image img, int width, int height, String filePath) {
-        img = new ImageIcon(filePath).getImage();
-        img = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        img = new ImageIcon(img).getImage();
-        return img;
-    }
-
     public MyPanel() {
         layoutSetting();
     }
@@ -128,13 +155,6 @@ public class MyPanel extends JPanel implements ActionListener {
     public void layoutSetting() {
         this.setLayout(null);
         this.setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
-        this.addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-                Dimension newSize = getSize();
-                resizeGame(newSize.width, newSize.height);
-            }
-        });
         switch (mf.getCurrentFloor()) {
             case 1 -> my1floorPanel();
             case 2 -> my2floorPanel();
@@ -143,11 +163,20 @@ public class MyPanel extends JPanel implements ActionListener {
             case 5 -> my5floorPanel();*/
 
         }
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                Dimension newSize = getSize();
+                resizeGame(newSize.width, newSize.height);
+            }
+        });
+
     }
 
     private void resizeGame(int width, int height) {
         PANEL_WIDTH = width;
         PANEL_HEIGHT = height;
+        //resizeButtons();
         repaint();
     }
 
@@ -183,55 +212,58 @@ public class MyPanel extends JPanel implements ActionListener {
         button.setBounds(x, y, 85, 35);
         button.addActionListener(this);
         button.setVisible(true);
-        if(centered) {
+        if (centered) {
             int xNew = centerAButtonX(button);
             button.setBounds(xNew, y, 85, 35);
         }
         return button;
     }
-    public Integer centerAButtonX(JButton button){
-        return (int)((PANEL_WIDTH - button.getBounds().getWidth())/2);
-    }
-    public Integer centerATextFieldX(){
-        return (PANEL_WIDTH - 100)/2;
+
+    public Integer centerAButtonX(JButton button) {
+        return (int) ((PANEL_WIDTH - button.getBounds().getWidth()) / 2);
     }
 
-    public void setCenteredWidth(String string, boolean biggerFont) {
-        if(biggerFont){
+    public Integer centerATextFieldX(JTextField textField) {
+        return (int) (PANEL_WIDTH - textField.getBounds().getWidth()) / 2;
+    }
+
+    public Integer setCenteredWidth(String string, boolean biggerFont) {
+        if (biggerFont) {
             myFont = new Font("Arial", Font.BOLD, 20);
-        }else{
+        } else {
             myFont = new Font("Arial", Font.BOLD, 8);
         }
         FontMetrics fm1 = g2D.getFontMetrics(myFont);
         flexibleString = string;
-        xCenteredValue = centerAString(fm1.stringWidth(flexibleString));
         myFont = new Font("Arial", Font.BOLD, 8);
+        return centerAString(fm1.stringWidth(flexibleString));
     }
+
     private Graphics2D g2D;
+
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         g2D = (Graphics2D) g;
         Font myFont1 = new Font("Arial", Font.BOLD, 20);
         if (chessPuzzle != null) {
             this.removeAll();
-            g2D.drawString(rulesForChessPuzzles(), 80, 15);
+            xCenteredValue = setCenteredWidth(rulesForChessPuzzles(), false);
+            g2D.drawString(rulesForChessPuzzles(), xCenteredValue, 15);
             g2D.setFont(myFont1);
-            setCenteredWidth(puzzles.get(randomIndex).getQuestion(), true);
+            xCenteredValue = setCenteredWidth(puzzles.get(randomIndex).getQuestion(), true);
             g2D.drawString(flexibleString, xCenteredValue, 65);
             g2D.drawImage(chessPuzzle, 300, 80, null);
             createSubmitButtonAndTextField();
-            chessPuzzle = null;
         } else if (riddle != null) {
             this.removeAll();
             g2D.setFont(myFont1);
-            setCenteredWidth(riddle, true);
+            xCenteredValue = setCenteredWidth(riddle, true);
             g2D.drawString(flexibleString, xCenteredValue, 55);
-            riddle = null;
             createSubmitButtonAndTextField();
         } else if (solvingRn) {
             g2D.drawImage(backgroundImg, 0, 0, null);
-            solvingRn = false;
             waiting(2799);
+            solvingRn = false;
         } else {
             g2D.drawImage(backgroundImg, 0, 0, PANEL_WIDTH, PANEL_HEIGHT, this);
             g2D.drawString("You", startX + 13, startY - 5);
@@ -251,7 +283,7 @@ public class MyPanel extends JPanel implements ActionListener {
     public void nextFloorOrBackToFloor() {
         timer.stop();
         if (solved) {
-            mf.setCurrentFloor(2);
+            mf.setCurrentFloor(mf.getCurrentFloor() + 1);
             layoutSetting();
         } else {
             layoutSetting();
@@ -290,7 +322,6 @@ public class MyPanel extends JPanel implements ActionListener {
         randomIndex = rd.nextInt(puzzles.size() - 1);
         chessPuzzle = puzzles.get(randomIndex).getImg().getScaledInstance(PANEL_HEIGHT - 200, PANEL_HEIGHT - 200, Image.SCALE_SMOOTH);
         chessPuzzle = new ImageIcon(chessPuzzle).getImage();
-        puzzleText = puzzles.get(randomIndex).getQuestion();
         answer = puzzles.get(randomIndex).getAnswer();
         repaint();
     }
@@ -379,11 +410,14 @@ public class MyPanel extends JPanel implements ActionListener {
 
     public void createSubmitButtonAndTextField() {
         rd = new Random();
+        int xNew;
         solvingRn = true;
         fillCorrectIncorrect();
         answerField = new JTextField();
         answerField.setBackground(Color.LIGHT_GRAY);
-        answerField.setBounds(440, 500, 120, 40);
+        answerField.setBounds(0, 500, 120, 40);
+        xNew = centerATextFieldX(answerField);
+        answerField.setBounds(xNew, 500, 120, 40);
         answerField.setVisible(true);
         submitButton = new JButton();
         submitButton.setBackground(Color.BLACK);
@@ -397,11 +431,15 @@ public class MyPanel extends JPanel implements ActionListener {
                 this.removeAll();
                 createBackground(correctAr.get(randomIndex));
                 solved = true;
+                chessPuzzle = null;
+                riddle = null;
                 repaint();
             } else {
                 this.removeAll();
                 createBackground(incorrectAr.get(randomIndex));
                 solved = false;
+                chessPuzzle = null;
+                riddle = null;
                 repaint();
             }
         });

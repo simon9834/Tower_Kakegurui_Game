@@ -8,10 +8,11 @@ import java.util.Random;
 public class MyPanel extends JPanel implements ActionListener {
     private JButton rightVent = new JButton(),
             leftVent = new JButton(), rightDoor = new JButton(),
-            leftDoor = new JButton(), centerDoor = new JButton();
+            leftDoor = new JButton(), centerDoor = new JButton(),
+            restart = new JButton(), lastQuest = new JButton();
     private JTextField answerField;
     private JButton submitButton;
-    private boolean solvingRn, solved;
+    private boolean solvingRn, solved, playerIsDone;
     private Font myFont = new Font("Arial", Font.BOLD, 8);
     private int PANEL_WIDTH = 1000;
     private int PANEL_WIDTH_OLD = 1000;
@@ -23,7 +24,10 @@ public class MyPanel extends JPanel implements ActionListener {
     private ArrayList<String> correctAr = new ArrayList<>();
     private ArrayList<String> incorrectAr = new ArrayList<>();
     private ArrayList<JButton> buttonsAr = new ArrayList<>();
-    private String actionWhere;
+    private String actionWhere, theUltimateRiddle = "A man has 20 pairs of socks in his drawer: " +
+            "6 blue pairs, 9 black pairs and 5 red pairs. The lights are " +
+            "out and he is completely in the dark. How many socks must he take out to make " +
+            "100 percent certain he has at least one pair of black socks?";
     private Image playerImg, backgroundImg, chessPuzzle;
     private Timer timer;
     private int endX, endY, randomIndex, startX = 700, startY = 500, xCenteredValue;
@@ -32,6 +36,8 @@ public class MyPanel extends JPanel implements ActionListener {
     private int numFrames = 75 - ps.getStamina();
     private MainFunctions mf = new MainFunctions();
     private Random rd;
+    private StackTraceElement caller;
+
 
     public void my1floorPanel() {
         buttonsAr.clear();
@@ -48,7 +54,7 @@ public class MyPanel extends JPanel implements ActionListener {
         addButtonsToFrame();
         createBackground("Floors/1stFloor.jpg");
         createPlayer();
-        moveButtons();
+        checkCaller("layoutSetting");
         this.setVisible(true);
         repaint();
     }
@@ -66,7 +72,7 @@ public class MyPanel extends JPanel implements ActionListener {
         addButtonsToFrame();
         createBackground("Floors/2stFloor.png");
         createPlayer();
-        moveButtons();
+        checkCaller("layoutSetting");
         this.setVisible(true);
         repaint();
     }
@@ -84,12 +90,24 @@ public class MyPanel extends JPanel implements ActionListener {
         addButtonsToFrame();
         createBackground("Floors/3thFloor.png");
         createPlayer();
-        moveButtons();
+        checkCaller("layoutSetting");
         this.setVisible(true);
         repaint();
     }
 
-  /*  public void my4floorPanel() {
+    public void my4floorPanel() {
+        createButton("LastRiddle", 460, 438, lastQuest, false);
+        createBackground("2stFloor.png");
+        buttonsAr.add(lastQuest);
+        addButtonsToFrame();
+        createBackground("Floors/4thFloor.png");
+        createPlayer();
+        checkCaller("layoutSetting");
+        this.setVisible(true);
+        repaint();
+    }//isnt finished
+
+    /*public void finalFloor() {
         changePosition(leftDoor, 626, 349);
         changePosition(rightDoor, 969, 397);
         changePosition(leftVent, 36, 470);
@@ -99,19 +117,29 @@ public class MyPanel extends JPanel implements ActionListener {
         this.setVisible(true);
         repaint();
     }//isnt finished
+      */
 
-    public void my5floorPanel() {
-        changePosition(leftDoor, 626, 349);
-        changePosition(rightDoor, 969, 397);
-        changePosition(leftVent, 36, 470);
-        changePosition(rightVent, 747, 478);
-        createBackground("2stFloor.png");
-        createPlayer();
-        this.setVisible(true);
-        repaint();
-    }//isnt finished
-    */
+    public void checkCaller(String methodName) {
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        if (stackTrace.length > 3) {
+            caller = stackTrace[3];
+        }
+        if (caller.getMethodName().equals(methodName)) {
+            recalculate();
+        } else {
+            moveButtons();
+        }
+    }
 
+    public void recalculate() {
+        int x;
+        int y;
+        for (JButton jButton : buttonsAr) {
+            x = (int) (((double) jButton.getX() / 1000) * PANEL_WIDTH);
+            y = (int) (((double) jButton.getY() / 600) * PANEL_HEIGHT);
+            jButton.setLocation(x, y);
+        }
+    }
 
     public void addButtonsToFrame() {
         int i = 0;
@@ -121,6 +149,7 @@ public class MyPanel extends JPanel implements ActionListener {
             i++;
         }
     }
+
 
     public void moveButtons() {
         int x;
@@ -145,6 +174,7 @@ public class MyPanel extends JPanel implements ActionListener {
         }
         PANEL_WIDTH_OLD = PANEL_WIDTH;
         PANEL_HEIGHT_OLD = PANEL_HEIGHT;
+
     }
 
 
@@ -161,20 +191,7 @@ public class MyPanel extends JPanel implements ActionListener {
     }
 
     public MyPanel() {
-        layoutSetting();
-    }
-
-    public void layoutSetting() {
-        this.setLayout(null);
-        this.setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
-        switch (mf.getCurrentFloor()) {
-            case 1 -> my1floorPanel();
-            case 2 -> my2floorPanel();
-            case 3 -> my3floorPanel();
-           /* case 4 -> my4floorPanel();
-            case 5 -> my5floorPanel();*/
-
-        }
+        layoutSetting(true);
         this.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -184,7 +201,23 @@ public class MyPanel extends JPanel implements ActionListener {
                 }
             }
         });
+    }
 
+    public void layoutSetting(boolean gameRestart) {
+        if (gameRestart) {
+            ps.setStamina(0);
+            this.removeAll();
+            playerIsDone = false;
+        }
+        this.setLayout(null);
+        this.setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
+        switch (mf.getCurrentFloor()) {
+            case 1 -> my1floorPanel();
+            case 2 -> my2floorPanel();
+            case 3 -> my3floorPanel();
+            case 4 -> my4floorPanel();
+            //case 5 -> my5floorPanel();
+        }
     }
 
     private void resizeGame(int width, int height) {
@@ -240,12 +273,8 @@ public class MyPanel extends JPanel implements ActionListener {
         return (int) (PANEL_WIDTH - textField.getBounds().getWidth()) / 2;
     }
 
-    public Integer setCenteredWidth(String string, boolean biggerFont) {
-        if (biggerFont) {
-            myFont = new Font("Arial", Font.BOLD, 20);
-        } else {
-            myFont = new Font("Arial", Font.BOLD, 12);
-        }
+    public Integer setCenteredWidth(String string, int fontSize) {
+        myFont = new Font("Arial", Font.BOLD, fontSize);
         FontMetrics fm1 = g2D.getFontMetrics(myFont);
         flexibleString = string;
         myFont = new Font("Arial", Font.BOLD, 8);
@@ -259,6 +288,7 @@ public class MyPanel extends JPanel implements ActionListener {
         g2D = (Graphics2D) g;
         Font myFont1 = new Font("Arial", Font.BOLD, 20);
         Font myFont = new Font("Arial", Font.BOLD, 12);
+        Font myEndFont = new Font("Arial", Font.PLAIN, 50);
 
         if (chessPuzzle != null) {
             this.removeAll();
@@ -266,24 +296,31 @@ public class MyPanel extends JPanel implements ActionListener {
             g2D.setColor(Color.ORANGE);
             g2D.fillRect(0, 0, PANEL_WIDTH, PANEL_HEIGHT - (5 * PANEL_HEIGHT / 6));
             g2D.setColor(Color.BLACK);
-            xCenteredValue = setCenteredWidth(rulesForChessPuzzles(), false);
+            xCenteredValue = setCenteredWidth(rulesForChessPuzzles(), 12);
             g2D.drawString(rulesForChessPuzzles(), xCenteredValue, PANEL_HEIGHT / 40);
             g2D.setFont(myFont1);
             g2D.setColor(Color.DARK_GRAY);
-            xCenteredValue = setCenteredWidth(riddle, true);
+            xCenteredValue = setCenteredWidth(riddle, 20);
             g2D.drawString(flexibleString, xCenteredValue, PANEL_HEIGHT / 9);
             g2D.drawImage(chessPuzzle, (PANEL_WIDTH - chessPuzzle.getWidth(this)) / 2, PANEL_HEIGHT / 7, null);
             createSubmitButtonAndTextField();
         } else if (riddle != null) {
             this.removeAll();
             g2D.setFont(myFont1);
-            xCenteredValue = setCenteredWidth(riddle, true);
+            xCenteredValue = setCenteredWidth(riddle, 20);
             g2D.drawString(flexibleString, xCenteredValue, 55);
             createSubmitButtonAndTextField();
         } else if (solvingRn) {
             g2D.drawImage(backgroundImg, 0, 0, null);
             waiting(2799);
             solvingRn = false;
+        } else if (playerIsDone) {
+            g2D.setFont(myEndFont);
+            g2D.setColor(Color.BLACK);
+            g2D.fillRect(0, 0, PANEL_WIDTH, PANEL_HEIGHT);
+            g2D.setColor(Color.green);
+            xCenteredValue = setCenteredWidth(endMessageString(), 40);
+            g2D.drawString(endMessageString(), xCenteredValue, PANEL_HEIGHT / 2);
         } else {
             g2D.drawImage(backgroundImg, 0, 0, PANEL_WIDTH, PANEL_HEIGHT, this);
             g2D.drawString("You", startX + 13, startY - 5);
@@ -304,29 +341,39 @@ public class MyPanel extends JPanel implements ActionListener {
         timer.stop();
         if (solved) {
             mf.setCurrentFloor(mf.getCurrentFloor() + 1);
-            layoutSetting();
-        } else {
-            layoutSetting();
         }
+        layoutSetting(false);
+    }
+
+    public void endTheGame() {
+        playerIsDone = true;
+        this.removeAll();
+        buttonsAr.clear();
+        repaint(0, 0, PANEL_WIDTH, PANEL_HEIGHT);
+        setCenteredWidth("Restart", 12);
+        createButton("Restart", 0, PANEL_HEIGHT * 2 / 3, restart, true);
+        buttonsAr.add(restart);
+        addButtonsToFrame();
     }
 
     public void animate(int startX, int startY, int endX, int endY) {
-        if(ps.getStamina() > 75){
-            System.out.println("YOU LOST");
-        }
         this.startX = startX;
         this.startY = startY;
         this.endX = endX;
         this.endY = endY;
         timerSetting(animationDuration / numFrames, false);
         timer.start();
-        ps.setStamina(ps.getStamina()+5);
+        ps.setStamina(ps.getStamina() + 5);
     }
 
     public String rulesForChessPuzzles() {
         return "Rules: In chess puzzles you need to enter either " +
                 "the figure that moves and the placement where it would move, or the " +
                 "number of moves that it would take to win";
+    }
+
+    public String endMessageString() {
+        return "You LOST!";
     }
 
     public void loadChessPuzzle() { //https://chessfox.com/chess-puzzles-for-intermediate-players/
@@ -368,25 +415,43 @@ public class MyPanel extends JPanel implements ActionListener {
         riddles.add(new Riddles("What is something that can help you achieve your financial goals, but requires patience and discipline?", "saving"));
     }
 
+    public boolean check() {
+        if (ps.getStamina() > 75) {
+            endTheGame();
+        }
+        return ps.getStamina() > 75;
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         int deltaX = 0;
         int deltaY = 0;
         if (e.getSource() == leftDoor) {
+            if (check()) return;
             actionWhere = "leftDoor";
             animate(startX, startY, leftDoor.getX(), leftDoor.getY());
         } else if (e.getSource() == rightDoor) {
+            if (check()) return;
             actionWhere = "rightDoor";
             animate(startX, startY, rightDoor.getX(), rightDoor.getY());
         } else if (e.getSource() == leftVent) {
+            if (check()) return;
             actionWhere = "leftVent";
             animate(startX, startY, leftVent.getX(), leftVent.getY());
         } else if (e.getSource() == rightVent) {
+            if (check()) return;
             actionWhere = "rightVent";
             animate(startX, startY, rightVent.getX(), rightVent.getY());
+        } else if (e.getSource() == restart) {
+            actionWhere = "restartButton";
+            layoutSetting(true);
+            return;
         } else if (e.getSource() == centerDoor) {
+            if (check()) return;
             actionWhere = "centerDoor";
             animate(startX, startY, centerDoor.getX(), centerDoor.getY());
+        }else if(e.getSource() == lastQuest){
+
         } else if (e.getSource() == timer) {
             deltaX = (endX - startX) / numFrames;
             deltaY = (endY - startY) / numFrames;

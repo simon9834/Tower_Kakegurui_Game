@@ -29,7 +29,7 @@ public class MyPanel extends JPanel implements ActionListener {
     private int endX, endY, randomIndex, startX = 700, startY = 500, xCenteredValue;
     private String riddle, answer, flexibleString;
     private PlayerStats ps = new PlayerStats();
-    private final int numFrames = 50 + (100 - ps.getStamina());
+    private int numFrames = 75 - ps.getStamina();
     private MainFunctions mf = new MainFunctions();
     private Random rd;
 
@@ -311,12 +311,16 @@ public class MyPanel extends JPanel implements ActionListener {
     }
 
     public void animate(int startX, int startY, int endX, int endY) {
+        if(ps.getStamina() > 75){
+            System.out.println("YOU LOST");
+        }
         this.startX = startX;
         this.startY = startY;
         this.endX = endX;
         this.endY = endY;
         timerSetting(animationDuration / numFrames, false);
         timer.start();
+        ps.setStamina(ps.getStamina()+5);
     }
 
     public String rulesForChessPuzzles() {

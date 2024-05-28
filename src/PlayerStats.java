@@ -1,25 +1,16 @@
 public class PlayerStats {
-    private int staminaLeft = 100;
-    private int speed;
+    private int staminaDecrease = 0;
     private String actualPosition;
     private enum Skins{
         GUY, GIRL, WEIRD
     }
 
     public int getStamina() {
-        return staminaLeft;
+        return staminaDecrease;
     }
 
     public void setStamina(int stamina) {
-        this.staminaLeft = stamina;
-    }
-
-    public int getSpeed() {
-        return speed;
-    }
-
-    public void setSpeed(int speed) {
-        this.speed = speed;
+        this.staminaDecrease = stamina;
     }
 
     public String getActualPosition() {

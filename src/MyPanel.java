@@ -28,7 +28,9 @@ public class MyPanel extends JPanel implements ActionListener {
             "6 blue pairs, 9 black pairs and 5 red pairs. The lights are " +
             "out and he is completely in the dark. How many socks must he take out to make " +
             "100 percent certain he has at least one pair of black socks?";
-    private Image playerImg, backgroundImg, chessPuzzle;
+
+    private Image playerImg,
+            backgroundImg, chessPuzzle;
     private Timer timer;
     private int endX, endY, randomIndex, startX = 700, startY = 500, xCenteredValue;
     private String riddle, answer, flexibleString;
@@ -98,7 +100,6 @@ public class MyPanel extends JPanel implements ActionListener {
     public void my4floorPanel() {
         buttonsAr.clear();
         createButton("LastRiddle", 460, 438, lastQuest, false);
-        createBackground("2stFloor.png");
         buttonsAr.add(lastQuest);
         addButtonsToFrame();
         createBackground("Floors/4thFloor.png");
@@ -192,6 +193,7 @@ public class MyPanel extends JPanel implements ActionListener {
     }
 
     public MyPanel() {
+        fillCorrectIncorrect();
         layoutSetting(true);
         this.addComponentListener(new ComponentAdapter() {
             @Override
@@ -209,6 +211,7 @@ public class MyPanel extends JPanel implements ActionListener {
             ps.setStamina(0);
             this.removeAll();
             playerIsDone = false;
+            lastRiddle = false;
         }
         this.setLayout(null);
         this.setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
@@ -312,18 +315,17 @@ public class MyPanel extends JPanel implements ActionListener {
             g2D.drawString(flexibleString, xCenteredValue, 55);
             createSubmitButtonAndTextField();
         } else if (solvingRn) {
-            this.removeAll();
-            g2D.drawImage(backgroundImg, 0, 0, null);
+            g2D.drawImage(backgroundImg, 0, 0, PANEL_WIDTH, PANEL_HEIGHT, null);
             waiting(2799);
             solvingRn = false;
-        }else if(lastRiddle){
+        } else if (lastRiddle) {
             this.removeAll();
-            g2D.setFont(myFont1);
-            g2D.drawImage(backgroundImg, 0, 0, PANEL_WIDTH, PANEL_HEIGHT, this);
-            g2D.drawString(riddles.get(0).getRiddle(), 0, PANEL_HEIGHT/2);
+            g2D.drawImage(backgroundImg, 0, 0, PANEL_WIDTH, PANEL_HEIGHT, null);
+            g2D.setFont(myFont);
+            g2D.setColor(Color.white);
+            g2D.drawString(riddle, PANEL_WIDTH / 100, PANEL_HEIGHT / 10);
             createSubmitButtonAndTextField();
         } else if (playerIsDone) {
-            this.removeAll();
             g2D.setFont(myEndFont);
             g2D.setColor(Color.BLACK);
             g2D.fillRect(0, 0, PANEL_WIDTH, PANEL_HEIGHT);
@@ -331,7 +333,7 @@ public class MyPanel extends JPanel implements ActionListener {
             xCenteredValue = setCenteredWidth(endMessageString(), 40);
             g2D.drawString(endMessageString(), xCenteredValue, PANEL_HEIGHT / 2);
         } else {
-            g2D.drawImage(backgroundImg, 0, 0, PANEL_WIDTH, PANEL_HEIGHT, this);
+            g2D.drawImage(backgroundImg, 0, 0, PANEL_WIDTH, PANEL_HEIGHT, null);
             g2D.drawString("You", startX + 13, startY - 5);
             g2D.drawImage(playerImg, startX, startY, null);
         }
@@ -358,7 +360,7 @@ public class MyPanel extends JPanel implements ActionListener {
         playerIsDone = true;
         this.removeAll();
         buttonsAr.clear();
-        repaint(0, 0, PANEL_WIDTH, PANEL_HEIGHT);
+        repaint();
         setCenteredWidth("Restart", 12);
         createButton("Restart", 0, PANEL_HEIGHT * 2 / 3, restart, true);
         buttonsAr.add(restart);
@@ -372,7 +374,6 @@ public class MyPanel extends JPanel implements ActionListener {
         this.endY = endY;
         timerSetting(animationDuration / numFrames, false);
         timer.start();
-        ps.setStamina(ps.getStamina() + 5);
     }
 
     public String rulesForChessPuzzles() {
@@ -415,12 +416,13 @@ public class MyPanel extends JPanel implements ActionListener {
         answer = riddles.get(randomIndex).getAnswer();
         repaint();
     }
-    public void getUltimateRiddle(){
+
+    public void getUltimateRiddle() {
         riddles.clear();
         loadUltimateRiddle();
-        createBackground("ChessPuzzleImg/finalBackground.jpg");
-            riddle = riddles.get(0).getRiddle();
-            answer = riddles.get(0).getAnswer();
+        createBackground("ChessPuzzleImg\\finalBackground.jpg");
+        riddle = riddles.get(0).getRiddle();
+        answer = riddles.get(0).getAnswer();
         lastRiddle = true;
         repaint();
     }
@@ -432,7 +434,8 @@ public class MyPanel extends JPanel implements ActionListener {
         riddles.add(new Riddles("What is something that you must do regularly to keep track of your income and expenses?", "budgeting"));
         riddles.add(new Riddles("What is something that can help you achieve your financial goals, but requires patience and discipline?", "saving"));
     }
-    public void loadUltimateRiddle(){
+
+    public void loadUltimateRiddle() {
         riddles.add(new Riddles(theUltimateRiddle, "24"));
     }
 
@@ -471,8 +474,8 @@ public class MyPanel extends JPanel implements ActionListener {
             if (check()) return;
             actionWhere = "centerDoor";
             animate(startX, startY, centerDoor.getX(), centerDoor.getY());
-        }else if(e.getSource() == lastQuest){
-            if(check()) return;
+        } else if (e.getSource() == lastQuest) {
+            if (check()) return;
             actionWhere = "lastQuest";
             animate(startX, startY, lastQuest.getX(), lastQuest.getY());
         } else if (e.getSource() == timer) {
@@ -484,10 +487,11 @@ public class MyPanel extends JPanel implements ActionListener {
             repaint();
         }
         if (deltaX == 0 && deltaY == 0 && e.getSource() == timer) {
+            ps.setStamina(ps.getStamina() + 5);
             Random random = new Random();
             boolean randomBoolean = random.nextBoolean();
             timer.stop();
-            if(Objects.equals(actionWhere, "lastQuest")){
+            if (Objects.equals(actionWhere, "lastQuest")) {
                 getUltimateRiddle();
                 return;
             }
@@ -529,7 +533,6 @@ public class MyPanel extends JPanel implements ActionListener {
         rd = new Random();
         int xNew;
         solvingRn = true;
-        fillCorrectIncorrect();
         answerField = new JTextField();
         answerField.setBackground(Color.LIGHT_GRAY);
         answerField.setSize(120, 40);

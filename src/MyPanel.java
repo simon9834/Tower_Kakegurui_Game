@@ -551,6 +551,9 @@ public class MyPanel extends JPanel implements ActionListener {
             if (Objects.equals(this.answer.toLowerCase().replaceAll("\\s+", ""), answer.toLowerCase().replaceAll("\\s+", ""))) {
                 this.removeAll();
                 createBackground(correctAr.get(randomIndex));
+                if(Objects.equals(actionWhere, "lastQuest")){
+                    createBackground("Floors/victory.jpeg");
+                }
                 solved = true;
                 chessPuzzle = null;
                 riddle = null;
@@ -559,6 +562,13 @@ public class MyPanel extends JPanel implements ActionListener {
             } else {
                 this.removeAll();
                 createBackground(incorrectAr.get(randomIndex));
+                if(Objects.equals(actionWhere, "lastQuest")){
+                    createBackground("Floors/defeat.jpeg");
+                    waiting(5000);
+                    mf.setCurrentFloor(1);
+                    layoutSetting(true);
+                    return;
+                }
                 solved = false;
                 chessPuzzle = null;
                 riddle = null;

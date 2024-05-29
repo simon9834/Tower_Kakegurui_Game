@@ -1,7 +1,7 @@
 
 public class MainFunctions {
 
-    private int currentFloor = 4;
+    private int currentFloor = 1;
 
     public int getCurrentFloor() {
         return currentFloor;

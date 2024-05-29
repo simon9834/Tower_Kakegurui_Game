@@ -8,6 +8,8 @@ import java.util.Random;
 public class MyPanel extends JPanel implements ActionListener {
     private JButton rightVent = new JButton(),
             leftVent = new JButton(), rightDoor = new JButton(),
+            leftPlayer = new JButton(), rightPlayer = new JButton(),
+            middlePlayer = new JButton(),
             leftDoor = new JButton(), centerDoor = new JButton(),
             restart = new JButton(), lastQuest = new JButton();
     private JTextField answerField;
@@ -19,6 +21,8 @@ public class MyPanel extends JPanel implements ActionListener {
     private int PANEL_HEIGHT_OLD = 600;
     private int PANEL_HEIGHT = 600;
     private final int animationDuration = 1000;
+    private int oneTime = 0;
+    private String filePath;
     private ArrayList<Riddles> riddles = new ArrayList<>();
     private ArrayList<Puzzles> puzzles = new ArrayList<>();
     private ArrayList<String> correctAr = new ArrayList<>();
@@ -55,7 +59,7 @@ public class MyPanel extends JPanel implements ActionListener {
         buttonsAr.add(centerDoor);
         addButtonsToFrame();
         createBackground("Floors/1stFloor.jpg");
-        createPlayer();
+        createPlayer(filePath);
         checkCaller("layoutSetting");
         this.setVisible(true);
         repaint();
@@ -73,7 +77,7 @@ public class MyPanel extends JPanel implements ActionListener {
         buttonsAr.add(rightVent);
         addButtonsToFrame();
         createBackground("Floors/2stFloor.png");
-        createPlayer();
+        createPlayer(filePath);
         checkCaller("layoutSetting");
         this.setVisible(true);
         repaint();
@@ -91,7 +95,7 @@ public class MyPanel extends JPanel implements ActionListener {
         buttonsAr.add(rightVent);
         addButtonsToFrame();
         createBackground("Floors/3thFloor.png");
-        createPlayer();
+        createPlayer(filePath);
         checkCaller("layoutSetting");
         this.setVisible(true);
         repaint();
@@ -103,23 +107,11 @@ public class MyPanel extends JPanel implements ActionListener {
         buttonsAr.add(lastQuest);
         addButtonsToFrame();
         createBackground("Floors/4thFloor.png");
-        createPlayer();
+        createPlayer(filePath);
         checkCaller("layoutSetting");
         this.setVisible(true);
         repaint();
-    }//isnt finished
-
-    /*public void finalFloor() {
-        changePosition(leftDoor, 626, 349);
-        changePosition(rightDoor, 969, 397);
-        changePosition(leftVent, 36, 470);
-        changePosition(rightVent, 747, 478);
-        createBackground("2stFloor.png");
-        createPlayer();
-        this.setVisible(true);
-        repaint();
-    }//isnt finished
-      */
+    }
 
     public void checkCaller(String methodName) {
         StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
@@ -180,8 +172,8 @@ public class MyPanel extends JPanel implements ActionListener {
     }
 
 
-    public void createPlayer() {
-        playerImg = new ImageIcon("playerIcon.png").getImage();
+    public void createPlayer(String filePath) {
+        playerImg = new ImageIcon(filePath).getImage();
         playerImg = playerImg.getScaledInstance(52, 52, Image.SCALE_SMOOTH);
         playerImg = new ImageIcon(playerImg).getImage();
     }
@@ -194,6 +186,7 @@ public class MyPanel extends JPanel implements ActionListener {
 
     public MyPanel() {
         fillCorrectIncorrect();
+        myOneTimePlayerChange();
         layoutSetting(true);
         this.addComponentListener(new ComponentAdapter() {
             @Override
@@ -204,6 +197,19 @@ public class MyPanel extends JPanel implements ActionListener {
                 }
             }
         });
+    }
+    public void myOneTimePlayerChange(){
+        buttonsAr.clear();
+        createButton("Girl, left", PANEL_WIDTH*2/6, PANEL_HEIGHT*2/3, leftPlayer, false);
+        createButton("Boy, mid", PANEL_WIDTH*3/6, PANEL_HEIGHT*2/3, middlePlayer, false);
+        createButton("Vlc, right", PANEL_WIDTH*4/6, PANEL_HEIGHT*2/3, rightPlayer, false);
+        buttonsAr.add(leftPlayer);
+        buttonsAr.add(middlePlayer);
+        buttonsAr.add(rightPlayer);
+        addButtonsToFrame();
+        checkCaller("layoutSetting");
+        this.setVisible(true);
+        repaint();
     }
 
     public void layoutSetting(boolean gameRestart) {
@@ -293,7 +299,18 @@ public class MyPanel extends JPanel implements ActionListener {
         Font myFont1 = new Font("Arial", Font.BOLD, 20);
         Font myFont = new Font("Arial", Font.BOLD, 12);
         Font myEndFont = new Font("Arial", Font.PLAIN, 50);
-
+        if(oneTime != 0){
+            xCenteredValue = setCenteredWidth("Pick a playerIcon", 20);
+            g2D.setFont(myFont1);
+            g2D.drawString("Pick a playerIcon", xCenteredValue, PANEL_HEIGHT/10);
+            createPlayer("Players/girlPlayer.png");
+            g2D.drawImage(playerImg, PANEL_WIDTH*2/6, PANEL_HEIGHT/2, null);
+            createPlayer("Players/playerIcon.png");
+            g2D.drawImage(playerImg, PANEL_WIDTH*3/6, PANEL_HEIGHT/2, null);
+            createPlayer("Players/vlcPlayer.png");
+            g2D.drawImage(playerImg, PANEL_WIDTH*4/6, PANEL_HEIGHT/2, null);
+            oneTime++;
+        }
         if (chessPuzzle != null) {
             this.removeAll();
             g2D.setFont(myFont);
@@ -314,13 +331,13 @@ public class MyPanel extends JPanel implements ActionListener {
             xCenteredValue = setCenteredWidth(riddle, 20);
             g2D.drawString(flexibleString, xCenteredValue, 55);
             createSubmitButtonAndTextField();
-        } else if (solvingRn) {
-            g2D.drawImage(backgroundImg, 0, 0, PANEL_WIDTH, PANEL_HEIGHT, null);
+        } else if (solvingRn && !lastRiddle) {
+            g2D.drawImage(backgroundImg, 0, 0, PANEL_WIDTH, PANEL_HEIGHT, this);
             waiting(2799);
             solvingRn = false;
         } else if (lastRiddle) {
             this.removeAll();
-            g2D.drawImage(backgroundImg, 0, 0, PANEL_WIDTH, PANEL_HEIGHT, null);
+            g2D.drawImage(backgroundImg, 0, 0, PANEL_WIDTH, PANEL_HEIGHT, this);
             g2D.setFont(myFont);
             g2D.setColor(Color.white);
             g2D.drawString(riddle, PANEL_WIDTH / 100, PANEL_HEIGHT / 10);
@@ -333,7 +350,7 @@ public class MyPanel extends JPanel implements ActionListener {
             xCenteredValue = setCenteredWidth(endMessageString(), 40);
             g2D.drawString(endMessageString(), xCenteredValue, PANEL_HEIGHT / 2);
         } else {
-            g2D.drawImage(backgroundImg, 0, 0, PANEL_WIDTH, PANEL_HEIGHT, null);
+            g2D.drawImage(backgroundImg, 0, 0, PANEL_WIDTH, PANEL_HEIGHT, this);
             g2D.drawString("You", startX + 13, startY - 5);
             g2D.drawImage(playerImg, startX, startY, null);
         }
@@ -454,6 +471,15 @@ public class MyPanel extends JPanel implements ActionListener {
             if (check()) return;
             actionWhere = "leftDoor";
             animate(startX, startY, leftDoor.getX(), leftDoor.getY());
+        } else if(e.getSource() == leftPlayer){
+            filePath = "Players/girlPlayer.png";
+            return;
+        } else if(e.getSource() == middlePlayer){
+            filePath = "Players/playerIcon.png";
+            return;
+        } else if(e.getSource() == rightPlayer){
+            filePath = "Players/vlcPlayer.png";
+            return;
         } else if (e.getSource() == rightDoor) {
             if (check()) return;
             actionWhere = "rightDoor";
@@ -551,7 +577,7 @@ public class MyPanel extends JPanel implements ActionListener {
             if (Objects.equals(this.answer.toLowerCase().replaceAll("\\s+", ""), answer.toLowerCase().replaceAll("\\s+", ""))) {
                 this.removeAll();
                 createBackground(correctAr.get(randomIndex));
-                if(Objects.equals(actionWhere, "lastQuest")){
+                if (Objects.equals(actionWhere, "lastQuest")) {
                     createBackground("Floors/victory.jpeg");
                 }
                 solved = true;
@@ -562,12 +588,9 @@ public class MyPanel extends JPanel implements ActionListener {
             } else {
                 this.removeAll();
                 createBackground(incorrectAr.get(randomIndex));
-                if(Objects.equals(actionWhere, "lastQuest")){
+                if (Objects.equals(actionWhere, "lastQuest")) {
                     createBackground("Floors/defeat.jpeg");
-                    waiting(5000);
                     mf.setCurrentFloor(1);
-                    layoutSetting(true);
-                    return;
                 }
                 solved = false;
                 chessPuzzle = null;
@@ -576,5 +599,21 @@ public class MyPanel extends JPanel implements ActionListener {
                 repaint();
             }
         });
+    }
+
+    public JButton getRightDoor() {
+        return rightDoor;
+    }
+
+    public void setRightDoor(JButton rightDoor) {
+        this.rightDoor = rightDoor;
+    }
+
+    public JButton getLeftDoor() {
+        return leftDoor;
+    }
+
+    public JButton getCenterDoor() {
+        return centerDoor;
     }
 }

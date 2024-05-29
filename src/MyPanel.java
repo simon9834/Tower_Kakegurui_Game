@@ -185,9 +185,8 @@ public class MyPanel extends JPanel implements ActionListener {
     }
 
     public MyPanel() {
-        fillCorrectIncorrect();
-        myOneTimePlayerChange();
-        layoutSetting(true);
+        this.setLayout(null);
+        this.setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
         this.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -197,12 +196,17 @@ public class MyPanel extends JPanel implements ActionListener {
                 }
             }
         });
+        myOneTimePlayerChange();
+    }
+    public void start(){
+        fillCorrectIncorrect();
+        layoutSetting(true);
     }
     public void myOneTimePlayerChange(){
         buttonsAr.clear();
-        createButton("Girl, left", PANEL_WIDTH*2/6, PANEL_HEIGHT*2/3, leftPlayer, false);
-        createButton("Boy, mid", PANEL_WIDTH*3/6, PANEL_HEIGHT*2/3, middlePlayer, false);
-        createButton("Vlc, right", PANEL_WIDTH*4/6, PANEL_HEIGHT*2/3, rightPlayer, false);
+        createButton("Girl, left", PANEL_WIDTH*2/6 + 32, PANEL_HEIGHT*2/3, leftPlayer, false);
+        createButton("Boy, mid", PANEL_WIDTH*3/6 + 32, PANEL_HEIGHT*2/3, middlePlayer, false);
+        createButton("Vlc, right", PANEL_WIDTH*4/6 + 32, PANEL_HEIGHT*2/3, rightPlayer, false);
         buttonsAr.add(leftPlayer);
         buttonsAr.add(middlePlayer);
         buttonsAr.add(rightPlayer);
@@ -219,8 +223,6 @@ public class MyPanel extends JPanel implements ActionListener {
             playerIsDone = false;
             lastRiddle = false;
         }
-        this.setLayout(null);
-        this.setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
         switch (mf.getCurrentFloor()) {
             case 1 -> my1floorPanel();
             case 2 -> my2floorPanel();
@@ -299,19 +301,23 @@ public class MyPanel extends JPanel implements ActionListener {
         Font myFont1 = new Font("Arial", Font.BOLD, 20);
         Font myFont = new Font("Arial", Font.BOLD, 12);
         Font myEndFont = new Font("Arial", Font.PLAIN, 50);
-        if(oneTime != 0){
+        if(oneTime == 0){
             xCenteredValue = setCenteredWidth("Pick a playerIcon", 20);
             g2D.setFont(myFont1);
             g2D.drawString("Pick a playerIcon", xCenteredValue, PANEL_HEIGHT/10);
-            createPlayer("Players/girlPlayer.png");
-            g2D.drawImage(playerImg, PANEL_WIDTH*2/6, PANEL_HEIGHT/2, null);
-            createPlayer("Players/playerIcon.png");
-            g2D.drawImage(playerImg, PANEL_WIDTH*3/6, PANEL_HEIGHT/2, null);
-            createPlayer("Players/vlcPlayer.png");
-            g2D.drawImage(playerImg, PANEL_WIDTH*4/6, PANEL_HEIGHT/2, null);
-            oneTime++;
-        }
-        if (chessPuzzle != null) {
+            playerImg = new ImageIcon("Players/girlPlayer.png").getImage();
+            playerImg = playerImg.getScaledInstance(150, 150, Image.SCALE_SMOOTH);
+            playerImg = new ImageIcon(playerImg).getImage();
+            g2D.drawImage(playerImg, PANEL_WIDTH*2/6, PANEL_HEIGHT/3, this);
+            playerImg = new ImageIcon("Players/playerIcon.png").getImage();
+            playerImg = playerImg.getScaledInstance(150, 150, Image.SCALE_SMOOTH);
+            playerImg = new ImageIcon(playerImg).getImage();
+            g2D.drawImage(playerImg, PANEL_WIDTH*3/6, PANEL_HEIGHT/3, this);
+            playerImg = new ImageIcon("Players/vlcPlayer.png").getImage();
+            playerImg = playerImg.getScaledInstance(150, 150, Image.SCALE_SMOOTH);
+            playerImg = new ImageIcon(playerImg).getImage();
+            g2D.drawImage(playerImg, PANEL_WIDTH*4/6, PANEL_HEIGHT/3, this);
+        }else if (chessPuzzle != null) {
             this.removeAll();
             g2D.setFont(myFont);
             g2D.setColor(Color.ORANGE);
@@ -473,12 +479,18 @@ public class MyPanel extends JPanel implements ActionListener {
             animate(startX, startY, leftDoor.getX(), leftDoor.getY());
         } else if(e.getSource() == leftPlayer){
             filePath = "Players/girlPlayer.png";
+            start();
+            oneTime++;
             return;
         } else if(e.getSource() == middlePlayer){
             filePath = "Players/playerIcon.png";
+            start();
+            oneTime++;
             return;
         } else if(e.getSource() == rightPlayer){
             filePath = "Players/vlcPlayer.png";
+            start();
+            oneTime++;
             return;
         } else if (e.getSource() == rightDoor) {
             if (check()) return;

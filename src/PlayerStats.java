@@ -1,5 +1,5 @@
 public class PlayerStats {
-    private int staminaDecrease = 76;
+    private int staminaDecrease = 0;
     private String actualPosition;
     private enum Skins{
         GUY, GIRL, WEIRD

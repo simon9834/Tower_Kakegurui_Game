@@ -12,7 +12,7 @@ public class MyPanel extends JPanel implements ActionListener {
             restart = new JButton(), lastQuest = new JButton();
     private JTextField answerField;
     private JButton submitButton;
-    private boolean solvingRn, solved, playerIsDone;
+    private boolean solvingRn, solved, playerIsDone, lastRiddle;
     private Font myFont = new Font("Arial", Font.BOLD, 8);
     private int PANEL_WIDTH = 1000;
     private int PANEL_WIDTH_OLD = 1000;
@@ -96,6 +96,7 @@ public class MyPanel extends JPanel implements ActionListener {
     }
 
     public void my4floorPanel() {
+        buttonsAr.clear();
         createButton("LastRiddle", 460, 438, lastQuest, false);
         createBackground("2stFloor.png");
         buttonsAr.add(lastQuest);
@@ -304,17 +305,25 @@ public class MyPanel extends JPanel implements ActionListener {
             g2D.drawString(flexibleString, xCenteredValue, PANEL_HEIGHT / 9);
             g2D.drawImage(chessPuzzle, (PANEL_WIDTH - chessPuzzle.getWidth(this)) / 2, PANEL_HEIGHT / 7, null);
             createSubmitButtonAndTextField();
-        } else if (riddle != null) {
+        } else if (riddle != null && !lastRiddle) {
             this.removeAll();
             g2D.setFont(myFont1);
             xCenteredValue = setCenteredWidth(riddle, 20);
             g2D.drawString(flexibleString, xCenteredValue, 55);
             createSubmitButtonAndTextField();
         } else if (solvingRn) {
+            this.removeAll();
             g2D.drawImage(backgroundImg, 0, 0, null);
             waiting(2799);
             solvingRn = false;
+        }else if(lastRiddle){
+            this.removeAll();
+            g2D.setFont(myFont1);
+            g2D.drawImage(backgroundImg, 0, 0, PANEL_WIDTH, PANEL_HEIGHT, this);
+            g2D.drawString(riddles.get(0).getRiddle(), 0, PANEL_HEIGHT/2);
+            createSubmitButtonAndTextField();
         } else if (playerIsDone) {
+            this.removeAll();
             g2D.setFont(myEndFont);
             g2D.setColor(Color.BLACK);
             g2D.fillRect(0, 0, PANEL_WIDTH, PANEL_HEIGHT);
@@ -406,6 +415,15 @@ public class MyPanel extends JPanel implements ActionListener {
         answer = riddles.get(randomIndex).getAnswer();
         repaint();
     }
+    public void getUltimateRiddle(){
+        riddles.clear();
+        loadUltimateRiddle();
+        createBackground("ChessPuzzleImg/finalBackground.jpg");
+            riddle = riddles.get(0).getRiddle();
+            answer = riddles.get(0).getAnswer();
+        lastRiddle = true;
+        repaint();
+    }
 
     public void loadRiddle() {
         riddles.add(new Riddles("What is something that you earn, but can also save and spend?", "money"));
@@ -413,6 +431,9 @@ public class MyPanel extends JPanel implements ActionListener {
         riddles.add(new Riddles("What is something that can protect you from unexpected financial emergencies?", "insurance"));
         riddles.add(new Riddles("What is something that you must do regularly to keep track of your income and expenses?", "budgeting"));
         riddles.add(new Riddles("What is something that can help you achieve your financial goals, but requires patience and discipline?", "saving"));
+    }
+    public void loadUltimateRiddle(){
+        riddles.add(new Riddles(theUltimateRiddle, "24"));
     }
 
     public boolean check() {
@@ -451,7 +472,9 @@ public class MyPanel extends JPanel implements ActionListener {
             actionWhere = "centerDoor";
             animate(startX, startY, centerDoor.getX(), centerDoor.getY());
         }else if(e.getSource() == lastQuest){
-
+            if(check()) return;
+            actionWhere = "lastQuest";
+            animate(startX, startY, lastQuest.getX(), lastQuest.getY());
         } else if (e.getSource() == timer) {
             deltaX = (endX - startX) / numFrames;
             deltaY = (endY - startY) / numFrames;
@@ -464,6 +487,10 @@ public class MyPanel extends JPanel implements ActionListener {
             Random random = new Random();
             boolean randomBoolean = random.nextBoolean();
             timer.stop();
+            if(Objects.equals(actionWhere, "lastQuest")){
+                getUltimateRiddle();
+                return;
+            }
             if (randomBoolean)
                 getChessPuzzle();
             else {
@@ -524,6 +551,7 @@ public class MyPanel extends JPanel implements ActionListener {
                 solved = true;
                 chessPuzzle = null;
                 riddle = null;
+                lastRiddle = false;
                 repaint();
             } else {
                 this.removeAll();
@@ -531,6 +559,7 @@ public class MyPanel extends JPanel implements ActionListener {
                 solved = false;
                 chessPuzzle = null;
                 riddle = null;
+                lastRiddle = false;
                 repaint();
             }
         });

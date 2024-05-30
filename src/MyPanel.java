@@ -44,7 +44,15 @@ public class MyPanel extends JPanel implements ActionListener {
     private Random rd;
     private StackTraceElement caller;
 
-
+    /**
+     * this method creates a setup for the first floor which is:
+     * creating 5 buttons
+     * adding them to arrayList of buttons
+     * adding all the buttons to my panel
+     * creating an image background later used in componentPaint method
+     * creates a player image later used in componentPaint method
+     * checks who called this method to be sure if I should reassign the value of PANEL_WIDTH_OLD and PANEL_HEIGHT_OLD
+     */
     public void my1floorPanel() {
         buttonsAr.clear();
         createButton("Left Door", 80, 350, leftDoor, false);
@@ -57,7 +65,7 @@ public class MyPanel extends JPanel implements ActionListener {
         buttonsAr.add(leftVent);
         buttonsAr.add(rightVent);
         buttonsAr.add(centerDoor);
-        addButtonsToFrame();
+        addButtonsToMyPanel();
         createBackground("Floors/1stFloor.jpg");
         createPlayer(filePath);
         checkCaller("layoutSetting");
@@ -65,6 +73,15 @@ public class MyPanel extends JPanel implements ActionListener {
         repaint();
     }
 
+    /**
+     *  this method creates a setup for the second floor which is:
+     *  creating 4 buttons
+     *  adding them to arrayList of buttons
+     *  adding all the buttons to my panel
+     *  creating an image background later used in componentPaint method
+     *  creates a player image later used in componentPaint method
+     *  checks who called this method to be sure if I should reassign the value of PANEL_WIDTH_OLD and PANEL_HEIGHT_OLD
+     */
     public void my2floorPanel() {
         buttonsAr.clear();
         createButton("Left Door", 615, 380, leftDoor, false);
@@ -75,14 +92,22 @@ public class MyPanel extends JPanel implements ActionListener {
         buttonsAr.add(rightDoor);
         buttonsAr.add(leftVent);
         buttonsAr.add(rightVent);
-        addButtonsToFrame();
+        addButtonsToMyPanel();
         createBackground("Floors/2stFloor.png");
         createPlayer(filePath);
         checkCaller("layoutSetting");
         this.setVisible(true);
         repaint();
     }
-
+    /**
+     *  this method creates a setup for the third floor which is:
+     *  creating 4 buttons
+     *  adding them to arrayList of buttons
+     *  adding all the buttons to my panel
+     *  creating an image background later used in componentPaint method
+     *  creates a player image later used in componentPaint method
+     *  checks who called this method to be sure if I should reassign the value of PANEL_WIDTH_OLD and PANEL_HEIGHT_OLD
+     */
     public void my3floorPanel() {
         buttonsAr.clear();
         createButton("Left Door", 5, 404, leftDoor, false);
@@ -93,19 +118,27 @@ public class MyPanel extends JPanel implements ActionListener {
         buttonsAr.add(rightDoor);
         buttonsAr.add(leftVent);
         buttonsAr.add(rightVent);
-        addButtonsToFrame();
+        addButtonsToMyPanel();
         createBackground("Floors/3thFloor.png");
         createPlayer(filePath);
         checkCaller("layoutSetting");
         this.setVisible(true);
         repaint();
     }
-
+    /**
+     *  this method creates a setup for the fourth/final floor which is:
+     *  creating 1 button
+     *  adding it to the arrayList of buttons
+     *  adding the button to my panel
+     *  creating an image background later used in componentPaint method
+     *  creates a player image later used in componentPaint method
+     *  checks who called this method to be sure if i should reassign the value of PANEL_WIDTH_OLD and PANEL_HEIGHT_OLD
+     */
     public void my4floorPanel() {
         buttonsAr.clear();
         createButton("LastRiddle", 460, 438, lastQuest, false);
         buttonsAr.add(lastQuest);
-        addButtonsToFrame();
+        addButtonsToMyPanel();
         createBackground("Floors/4thFloor.png");
         createPlayer(filePath);
         checkCaller("layoutSetting");
@@ -113,6 +146,13 @@ public class MyPanel extends JPanel implements ActionListener {
         repaint();
     }
 
+    /**
+     * this method checks the caller of the method that called this method
+     * other words if i call this method from wherever il know who called the method that is on rn
+     * @param methodName for what method should i look for when searching for the previous method
+     *                   based on comparing the method names it does recalculate() change buttons pos without changing PANEL_WIDTH_OLD and PANEL_HEIGHT_OLD
+     *                   or moveButtons() which recalculates the buttons while changing the PANEL_WIDTH_OLD and PANEL_HEIGHT_OLD
+     */
     public void checkCaller(String methodName) {
         StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         if (stackTrace.length > 3) {
@@ -125,6 +165,9 @@ public class MyPanel extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * this method changes all the buttons positions in the arrayList without changing the PANEL_WIDTH_OLD and PANEL_HEIGHT_OLD
+     */
     public void recalculate() {
         int x;
         int y;
@@ -135,7 +178,10 @@ public class MyPanel extends JPanel implements ActionListener {
         }
     }
 
-    public void addButtonsToFrame() {
+    /**
+     * this method adds all the buttons from my buttons arrayList to myPanel
+     */
+    public void addButtonsToMyPanel() {
         int i = 0;
         for (JButton ignored : buttonsAr) {
             this.add(buttonsAr.get(i));
@@ -144,7 +190,10 @@ public class MyPanel extends JPanel implements ActionListener {
         }
     }
 
-
+    /**
+     * this method moves all the buttons from button arrayList, moves answerField, moves chessPuzzle image and changes PANEL_WIDTH_OLD and PANEL_HEIGHT_OLD
+     * it changes its positions based on resizing the panel (PANEL_WIDTH and PANEL_HEIGHT)
+     */
     public void moveButtons() {
         int x;
         int y;
@@ -171,7 +220,10 @@ public class MyPanel extends JPanel implements ActionListener {
 
     }
 
-
+    /**
+     *
+     * @param filePath
+     */
     public void createPlayer(String filePath) {
         playerImg = new ImageIcon(filePath).getImage();
         playerImg = playerImg.getScaledInstance(52, 52, Image.SCALE_SMOOTH);
@@ -210,7 +262,7 @@ public class MyPanel extends JPanel implements ActionListener {
         buttonsAr.add(leftPlayer);
         buttonsAr.add(middlePlayer);
         buttonsAr.add(rightPlayer);
-        addButtonsToFrame();
+        addButtonsToMyPanel();
         checkCaller("layoutSetting");
         this.setVisible(true);
         repaint();
@@ -387,7 +439,7 @@ public class MyPanel extends JPanel implements ActionListener {
         setCenteredWidth("Restart", 12);
         createButton("Restart", 0, PANEL_HEIGHT * 2 / 3, restart, true);
         buttonsAr.add(restart);
-        addButtonsToFrame();
+        addButtonsToMyPanel();
     }
 
     public void animate(int startX, int startY, int endX, int endY) {

@@ -389,7 +389,7 @@ public class MyPanel extends JPanel implements ActionListener {
         } else if (displayWall) {
             this.removeAll();
             g2D.drawImage(backgroundImg, 0, 0, PANEL_WIDTH, PANEL_HEIGHT, this);
-            pauseExecution(4000);
+            pauseExecution(2000);
             wallDone = true;
         } else if (solvingRn && !lastRiddle) {
             g2D.drawImage(backgroundImg, 0, 0, PANEL_WIDTH, PANEL_HEIGHT, this);

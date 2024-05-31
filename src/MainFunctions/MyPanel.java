@@ -15,14 +15,16 @@ public class MyPanel extends JPanel implements ActionListener {
             centerDoor = new JButton(), lastQuest = new JButton();
     private JTextField answerField;
     private JButton submitButton;
-    private boolean solvingRn, solved, playerIsDone, lastRiddle, puzzle;
+    private boolean solvingRn, solved, playerIsDone, lastRiddle, puzzle,
+            displayWall,
+            wallDone = false;
     private Font myFont = new Font("Arial", Font.BOLD, 8);
     private int PANEL_WIDTH = 1000;
     private int PANEL_WIDTH_OLD = 1000;
     private int PANEL_HEIGHT_OLD = 600;
     private int PANEL_HEIGHT = 600;
     private final int animationDuration = 1000;
-    private int oneTime = 0;
+    private int oneTime = 0, wallCount = 1;
     private String filePath;
     private ArrayList<Additions.Riddles> riddles = new ArrayList<>();
     private ArrayList<Additions.Puzzles> puzzles = new ArrayList<>();
@@ -379,13 +381,19 @@ public class MyPanel extends JPanel implements ActionListener {
             g2D.drawString(flexibleString, xCenteredValue, 55);
             g2D.drawImage(chessPuzzle, (PANEL_WIDTH - chessPuzzle.getWidth(this)) / 2, PANEL_HEIGHT / 7, null);
             createSubmitButtonAndTextField();
-            if(puzzle){
+            if (puzzle) {
                 g2D.setFont(myFont);
                 xCenteredValue = setCenteredWidth(rulesForChessPuzzles(), 12);
                 g2D.drawString(rulesForChessPuzzles(), xCenteredValue, PANEL_HEIGHT / 40);
             }
-        } else if (solvingRn && !lastRiddle && chessPuzzle == null) {
+        } else if (displayWall) {
+            this.removeAll();
             g2D.drawImage(backgroundImg, 0, 0, PANEL_WIDTH, PANEL_HEIGHT, this);
+            pauseExecution(4000);
+            wallDone = true;
+        } else if (solvingRn && !lastRiddle) {
+            g2D.drawImage(backgroundImg, 0, 0, PANEL_WIDTH, PANEL_HEIGHT, this);
+            actionWhere = null;
             pauseExecution(6000);
         } else if (lastRiddle) {
             this.removeAll();
@@ -421,9 +429,22 @@ public class MyPanel extends JPanel implements ActionListener {
     }
 
     public void nextFloorOrBackToFloor() {
+        if(Objects.equals(actionWhere, "centerDoor") && !wallDone){
+            mp.stop("thinkingMusic");
+            isWall();
+            if(displayWall){
+                repaint();
+                return;
+            }else{
+                mf.setCurrentFloor(4);
+            }
+        }
+        wallDone = false;
+        displayWall = false;
         if (solved) {
             mf.setCurrentFloor(mf.getCurrentFloor() + 1);
         }
+        wallCount++;
         layoutSetting();
     }
 
@@ -582,6 +603,16 @@ public class MyPanel extends JPanel implements ActionListener {
             }
         }
     }
+    public void isWall(){
+        if(!((wallCount %5) == 0)){
+            displayWall = true;
+            createBackground("AdditionalPics/wall.jpg");
+            mp.stop("bckgroundMusic");
+            mp.play("susFailMusic");
+        }else{
+            displayWall = false;
+        }
+    }
 
     public void fillCorrectIncorrect() {
         correctAr.add("Correct/correctCompet.jpg");
@@ -631,6 +662,10 @@ public class MyPanel extends JPanel implements ActionListener {
             puzzle = false;
             riddle = null;
             lastRiddle = false;
+            if(Objects.equals(actionWhere, "centerDoor")){//might cause problems?
+                nextFloorOrBackToFloor();
+                return;
+            }
             if (Objects.equals(this.answer.toLowerCase().replaceAll("\\s+", ""), answer.toLowerCase().replaceAll("\\s+", ""))) {
                 this.removeAll();
                 mp.stop("thinkingMusic");
@@ -642,6 +677,7 @@ public class MyPanel extends JPanel implements ActionListener {
                     repaint();
                     return;
                 }
+
                 solved = true;
                 solvingRn = true;
                 repaint();
@@ -668,6 +704,7 @@ public class MyPanel extends JPanel implements ActionListener {
             public void actionPerformed(ActionEvent e) {
                 mp.stop("winMusic");
                 mp.stop("failMusic");
+                mp.stop("susFailMusic");
                 nextFloorOrBackToFloor();
                 solvingRn = false;
             }

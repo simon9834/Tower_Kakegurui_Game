@@ -235,6 +235,7 @@ public class MyPanel extends JPanel implements ActionListener {
 
     /**
      * this method creates an image called playerIcon based on the path that is passed in to the method.
+     *
      * @param filePath a filepath that is used to find the right image that should be in an instance called playerImg.
      */
     public void createPlayer(String filePath) {
@@ -245,6 +246,7 @@ public class MyPanel extends JPanel implements ActionListener {
 
     /**
      * this method creates an image called backgroundImg based on the path that is passed in to the method.
+     *
      * @param filePath a filepath that is used to find the right image that should be in an instance called backgroundImg.
      */
     public void createBackground(String filePath) {
@@ -289,6 +291,8 @@ public class MyPanel extends JPanel implements ActionListener {
      */
     public void start() {
         fillCorrectIncorrect();
+        loadChessPuzzle();
+        loadRiddle();
         layoutSetting();
     }
 
@@ -326,14 +330,15 @@ public class MyPanel extends JPanel implements ActionListener {
             case 2 -> my2floorPanel();
             case 3 -> my3floorPanel();
             case 4 -> my4floorPanel();
-            default -> System.exit(0);
+            default -> System.out.println("all the floors didnt fit you in ig");
         }
     }
 
     /**
      * this method calls methods for resizing background, buttons, playerIcon,
      * submit button and text field when the panel size is changed.
-     * @param width sets the new width of the panel that's being stored in PANEL_WIDTH.
+     *
+     * @param width  sets the new width of the panel that's being stored in PANEL_WIDTH.
      * @param height sets the new height of the panel that's being stored in PANEL_HEIGHT.
      */
     private void resizeGame(int width, int height) {
@@ -345,6 +350,7 @@ public class MyPanel extends JPanel implements ActionListener {
 
     /**
      * this method sets a timer to new time.
+     *
      * @param milliSecs the time that's the timer being set to.
      */
     public void timerSetting(int milliSecs) {
@@ -353,12 +359,13 @@ public class MyPanel extends JPanel implements ActionListener {
 
     /**
      * method for creating all the buttons easily.
-     * @param text this is the text displayed on the button.
-     * @param x this is the x position that's being used if the centeredX is false.
-     * @param y this is the y position.
-     * @param button this is the button that's being created.
+     *
+     * @param text      this is the text displayed on the button.
+     * @param x         this is the x position that's being used if the centeredX is false.
+     * @param y         this is the y position.
+     * @param button    this is the button that's being created.
      * @param centeredX this calls a method for setting the x to be in the middle,
-     *                 according to buttons length if true.
+     *                  according to buttons length if true.
      *                  If false, nothing happens.
      */
     private void createButton(String text, int x, int y, JButton button, boolean centeredX) {
@@ -390,6 +397,7 @@ public class MyPanel extends JPanel implements ActionListener {
 
     /**
      * this method is being used to center a buttons xPosition based on the panel width and buttons width.
+     *
      * @param button that's the button that's being centered.
      * @return returns the position that should be right for the centered button.
      */
@@ -399,6 +407,7 @@ public class MyPanel extends JPanel implements ActionListener {
 
     /**
      * this method is being used to center a text fields x position based on the panel width and text fields width.
+     *
      * @param textField this is the text field that is being centered (by x).
      * @return returns the x value in the center (where the textField should be placed to be in the middle.
      */
@@ -410,7 +419,8 @@ public class MyPanel extends JPanel implements ActionListener {
      * this method resolves the length of a string in pixels and calculates
      * where the string should be placed to be in the middle (x position only)
      * thanks to the centerAString method.
-     * @param string the string that's being measured.
+     *
+     * @param string   the string that's being measured.
      * @param fontSize the font size that's being currently used.
      * @return returns an x position where the string should be placed to be in the middle of the panel.
      */
@@ -425,6 +435,7 @@ public class MyPanel extends JPanel implements ActionListener {
 
     /**
      * a special method used to do the same as createPlayer just with a bigger width and height.
+     *
      * @param fileName the fileName that's deciding what picture will I use.
      */
     public void playerPick(String fileName) {
@@ -436,6 +447,7 @@ public class MyPanel extends JPanel implements ActionListener {
     /**
      * this method is used to create every visual thing in the game
      * except things like buttons and textField.
+     *
      * @param g the <code>Graphics</code> object to protect this is the graphic tool that I use.
      */
     public void paintComponent(Graphics g) {
@@ -443,7 +455,6 @@ public class MyPanel extends JPanel implements ActionListener {
         g2D = (Graphics2D) g;
         Font myFont1 = new Font("Arial", Font.BOLD, 20);
         Font myFont = new Font("Arial", Font.BOLD, 12);
-        Font myEndFont = new Font("Arial", Font.PLAIN, 50);
         if (oneTime == 0) {
             xCenteredValue = setCenteredWidth("Pick a playerIcon", 20);
             g2D.setFont(myFont1);
@@ -472,12 +483,12 @@ public class MyPanel extends JPanel implements ActionListener {
         } else if (displayWall) {
             this.removeAll();
             g2D.drawImage(backgroundImg, 0, 0, PANEL_WIDTH, PANEL_HEIGHT, this);
-            pauseExecution(2000);
             wallDone = true;
+            pauseExecution(2000, true);
         } else if (solvingRn && !lastRiddle) {
             g2D.drawImage(backgroundImg, 0, 0, PANEL_WIDTH, PANEL_HEIGHT, this);
             actionWhere = null;
-            pauseExecution(6000);
+            pauseExecution(6000, true);
         } else if (lastRiddle) {
             this.removeAll();
             g2D.drawImage(backgroundImg, 0, 0, PANEL_WIDTH, PANEL_HEIGHT, this);
@@ -491,13 +502,6 @@ public class MyPanel extends JPanel implements ActionListener {
                 y += lineHeight;
             }
             createSubmitButtonAndTextField();
-        } else if (playerIsDone) {
-            g2D.setFont(myEndFont);
-            g2D.setColor(Color.BLACK);
-            g2D.fillRect(0, 0, PANEL_WIDTH, PANEL_HEIGHT);
-            g2D.setColor(Color.green);
-            xCenteredValue = setCenteredWidth(endMessageString(), 40);
-            g2D.drawString(endMessageString(), xCenteredValue, PANEL_HEIGHT / 2);
         } else {
             g2D.drawImage(backgroundImg, 0, 0, PANEL_WIDTH, PANEL_HEIGHT, this);
             if (playerImg != null) {
@@ -511,6 +515,7 @@ public class MyPanel extends JPanel implements ActionListener {
      * This method is a helping method for setCenteredWidth.
      * This method calculates what's the best position for the string to be placed,
      * to be in the center of the panel.
+     *
      * @param pixelLength this is the pixel length of the string calculated.
      * @return this method returns the centered x position for the string.
      */
@@ -522,7 +527,7 @@ public class MyPanel extends JPanel implements ActionListener {
      * This method is used to decide whether a player moves to the next floor
      * or stays at the floor he is rn.
      * Also, the method contains an if to decide
-     * that the player should go to the fourth floor from the first floor
+     * if the player should go to the fourth floor from the first floor.
      */
     public void nextFloorOrBackToFloor() {
         if (Objects.equals(actionWhere, "centerDoor") && !wallDone) {
@@ -532,7 +537,9 @@ public class MyPanel extends JPanel implements ActionListener {
                 repaint();
                 return;
             } else {
-                mf.setCurrentFloor(4);
+                if(solved){
+                    mf.setCurrentFloor(4);
+                }
             }
         }
         wallDone = false;
@@ -545,11 +552,12 @@ public class MyPanel extends JPanel implements ActionListener {
     }
 
     /**
-     * this method sets all values used to move playerIcon and sets timer for a specified time
-     * @param startX thi is the value x where the player icon is rn
-     * @param startY this is the value y where the player icon is rn
-     * @param endX this is the value x where the player will be moving to
-     * @param endY this is the value y where the player will be moving to
+     * this method sets all values used to move playerIcon and sets timer for a specified time.
+     *
+     * @param startX thi is the value x where the player icon is rn.
+     * @param startY this is the value y where the player icon is rn.
+     * @param endX   this is the value x where the player will be moving to.
+     * @param endY   this is the value y where the player will be moving to.
      */
     public void animate(int startX, int startY, int endX, int endY) {
         this.startX = startX;
@@ -561,8 +569,9 @@ public class MyPanel extends JPanel implements ActionListener {
     }
 
     /**
-     * this method is used as a string rulesForChess
-     * @return returns the string rulesForChess
+     * this method is used as a string rulesForChess.
+     *
+     * @return returns the string rulesForChess.
      */
     public String rulesForChessPuzzles() {
         return "Rules: In chess puzzles you need to enter either " +
@@ -571,14 +580,20 @@ public class MyPanel extends JPanel implements ActionListener {
     }
 
     /**
+     * this method is used as a string coz why use normal strings right?
      *
-     * @return
+     * @return returns the string.
      */
     public String endMessageString() {
         return "You LOST!";
     }
 
-    public void loadChessPuzzle() { //https://chessfox.com/chess-puzzles-for-intermediate-players/
+    /**
+     * This method loads all the chess puzzles to a puzzle arrayList.
+     * Here is the link to all the puzzles:
+     * https://chessfox.com/chess-puzzles-for-intermediate-players/
+     */
+    public void loadChessPuzzle() {
         puzzles.add(new Additions.Puzzles(new ImageIcon("ChessPuzzleImg/chessPuzzle1.png").getImage(), "where will you get material advantage (white on turn)", "Rf7"));
         puzzles.add(new Additions.Puzzles(new ImageIcon("ChessPuzzleImg/chessPuzzle2.png").getImage(), "where will you get material advantage threatening a mate (black on turn)", "Dh5"));
         puzzles.add(new Additions.Puzzles(new ImageIcon("ChessPuzzleImg/chessPuzzle3.png").getImage(), "how many moves till a mate? (white on turn)", "2"));
@@ -589,9 +604,13 @@ public class MyPanel extends JPanel implements ActionListener {
         puzzles.add(new Additions.Puzzles(new ImageIcon("ChessPuzzleImg/chessPuzzle8.png").getImage(), "can you take the knight on e4 without any further problems? (yes/no)", "yes"));
     }
 
+    /**
+     * This method reassigns the randomIndex to get a random chess puzzle from the arrayList
+     * and set the riddle and answer based on the chosen puzzle.
+     * This method calls repaint for repainting the puzzle
+     */
     public void getChessPuzzle() {
         rd = new Random();
-        loadChessPuzzle();
         puzzle = true;
         randomIndex = rd.nextInt(puzzles.size() - 1);
         chessPuzzle = puzzles.get(randomIndex).getImg().getScaledInstance(PANEL_HEIGHT - 200, PANEL_HEIGHT - 200, Image.SCALE_SMOOTH);
@@ -601,57 +620,74 @@ public class MyPanel extends JPanel implements ActionListener {
         repaint();
     }
 
+    /**
+     * This method is used to get a riddle from the riddle arrayList
+     * and set riddle and answer.
+     * After that, I call repaint to paint all of this.
+     */
     public void getRiddle() {
         rd = new Random();
-        loadRiddle();
         puzzle = false;
         chessPuzzle = new ImageIcon("AdditionalPics/sherlock.png").getImage();
-        randomIndex = rd.nextInt(riddles.size() - 1);
+        randomIndex = rd.nextInt(riddles.size() - 2);
         riddle = riddles.get(randomIndex).getRiddle();
         answer = riddles.get(randomIndex).getAnswer();
         repaint();
     }
 
+    /**
+     * This method is used to set the last and probably the hardest riddle.
+     * Begins with setting riddle and answer.
+     * After that, call the repaint to paint everything.
+     */
     public void getUltimateRiddle() {
-        riddles.clear();
-        loadUltimateRiddle();
         createBackground("ChessPuzzleImg\\finalBackground.jpg");
-        riddle = riddles.get(0).getRiddle();
-        answer = riddles.get(0).getAnswer();
+        riddle = riddles.get(riddles.size() - 1).getRiddle();
+        answer = riddles.get(riddles.size() - 1).getAnswer();
         lastRiddle = true;
         repaint();
     }
 
+    /**
+     * This method is used to load all the riddles to the arrayList.
+     */
     public void loadRiddle() {
         riddles.add(new Additions.Riddles("What is something that you earn, but can also save and spend?", "money"));
         riddles.add(new Additions.Riddles("What is something that can grow over time, but needs to be managed carefully?", "investments"));
         riddles.add(new Additions.Riddles("What is something that can protect you from unexpected financial emergencies?", "insurance"));
         riddles.add(new Additions.Riddles("What is something that you must do regularly to keep track of your income and expenses?", "budgeting"));
         riddles.add(new Additions.Riddles("What is something that can help you achieve your financial goals, but requires patience and discipline?", "saving"));
-    }
-
-    public void loadUltimateRiddle() {
         riddles.add(new Additions.Riddles(theUltimateRiddle, "24"));
     }
 
+    /**
+     * This method is used to check if the player has enough stamina to keep playing.
+     * If a player doesn't have enough, the game will end.
+     *
+     * @return returns false if the players stamina is good
+     */
     public boolean check() {
-        if (ps.getStamina() >= 70) {
-            mp.stop("bckgroundMusic");
-            mp.play("susFailMusic");
-            this.removeAll();
-            playerIsDone = true;
-            repaint();
-        }
-        ps.setStamina(ps.getStamina() + 3);
+        ps.setStamina(ps.getStamina() + 1);
         return ps.getStamina() >= 70;
     }
 
+    /**
+     * This method listens to the mouse, and if the mouse clicks at any button displayed,
+     * the button press will be processed here.
+     *
+     * @param e the event to be processed.
+     *          At each button, there's some executable event.
+     *          After the execution, there is an animation and deciding if
+     *          the thing displayed will be a puzzle riddle or something else.
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         int deltaX = 0;
         int deltaY = 0;
         if (e.getSource() == leftDoor) {
-            if (check()) return;
+            if (check()){
+                System.exit(0);
+            }
             actionWhere = "leftDoor";
             animate(startX, startY, leftDoor.getX(), leftDoor.getY());
         } else if (e.getSource() == leftPlayer) {
@@ -670,23 +706,33 @@ public class MyPanel extends JPanel implements ActionListener {
             oneTime++;
             return;
         } else if (e.getSource() == rightDoor) {
-            if (check()) return;
+            if (check()){
+                System.exit(0);
+            }
             actionWhere = "rightDoor";
             animate(startX, startY, rightDoor.getX(), rightDoor.getY());
         } else if (e.getSource() == leftVent) {
-            if (check()) return;
+            if (check()){
+                System.exit(0);
+            }
             actionWhere = "leftVent";
             animate(startX, startY, leftVent.getX(), leftVent.getY());
         } else if (e.getSource() == rightVent) {
-            if (check()) return;
+            if (check()){
+                System.exit(0);
+            }
             actionWhere = "rightVent";
             animate(startX, startY, rightVent.getX(), rightVent.getY());
         } else if (e.getSource() == centerDoor) {
-            if (check()) return;
+            if (check()){
+                System.exit(0);
+            }
             actionWhere = "centerDoor";
             animate(startX, startY, centerDoor.getX(), centerDoor.getY());
         } else if (e.getSource() == lastQuest) {
-            if (check()) return;
+            if (check()){
+                System.exit(0);
+            }
             actionWhere = "lastQuest";
             animate(startX, startY, lastQuest.getX(), lastQuest.getY());
         } else if (e.getSource() == timer) {
@@ -715,6 +761,11 @@ public class MyPanel extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * This method decides if it is the fifth tenth or fifteenth turn from the start,
+     * to allow going to the last floor from the first one.
+     * And stops the music that plays in the backgroundd and playes susFailMusic
+     */
     public void isWall() {
         if (!((wallCount % 5) == 0)) {
             displayWall = true;
@@ -726,6 +777,9 @@ public class MyPanel extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * This method is used to fill the correct and incorrect arrayList with images loaded from the file.
+     */
     public void fillCorrectIncorrect() {
         correctAr.add("Correct/correctCompet.jpg");
         correctAr.add("Correct/correct - profesor.jpg");
@@ -752,6 +806,13 @@ public class MyPanel extends JPanel implements ActionListener {
         incorrectAr.add("Incorrect/incorrectTeach.jpg");
     }
 
+    /**
+     * This method creates a submitButton and a textField.
+     * Also listens to the text field and decides whether the answer
+     * that player provided is right or wrong.
+     * If it is the last question or not and based
+     * on that executes some event.
+     */
     public void createSubmitButtonAndTextField() {
         rd = new Random();
         int xNew;
@@ -774,7 +835,7 @@ public class MyPanel extends JPanel implements ActionListener {
             puzzle = false;
             riddle = null;
             lastRiddle = false;
-            if (Objects.equals(actionWhere, "centerDoor")) {//might cause problems?
+            if (Objects.equals(actionWhere, "centerDoor")) {
                 nextFloorOrBackToFloor();
                 return;
             }
@@ -789,7 +850,6 @@ public class MyPanel extends JPanel implements ActionListener {
                     repaint();
                     return;
                 }
-
                 solved = true;
                 solvingRn = true;
                 repaint();
@@ -811,14 +871,21 @@ public class MyPanel extends JPanel implements ActionListener {
         });
     }
 
-    public void pauseExecution(int milliseconds) {
+    /**
+     * this method is used to pause everything (except music) and then execute some event.
+     *
+     * @param milliseconds this is the time that the player will have to wait.
+     */
+    public void pauseExecution(int milliseconds, boolean goOn) {
         Timer timer = new Timer(milliseconds, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mp.stop("winMusic");
-                mp.stop("failMusic");
-                mp.stop("susFailMusic");
-                nextFloorOrBackToFloor();
+                if(goOn){
+                    mp.stop("winMusic");
+                    mp.stop("failMusic");
+                    mp.stop("susFailMusic");
+                    nextFloorOrBackToFloor();
+                }
                 solvingRn = false;
             }
         });
@@ -826,14 +893,29 @@ public class MyPanel extends JPanel implements ActionListener {
         timer.start();
     }
 
+    /**
+     * used for test
+     *
+     * @return returns rightDoor
+     */
     public JButton getRightDoor() {
         return rightDoor;
     }
 
+    /**
+     * used for test
+     *
+     * @return returns leftDoor
+     */
     public JButton getLeftDoor() {
         return leftDoor;
     }
 
+    /**
+     * used for test
+     *
+     * @return returns centerDoor
+     */
     public JButton getCenterDoor() {
         return centerDoor;
     }

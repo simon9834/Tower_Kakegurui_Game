@@ -4,6 +4,7 @@ import MainFunctions.MyPanel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.swing.*;
 import java.awt.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,10 +18,35 @@ public class MyPanelTest {
     }
 
     @Test
+    public void myOneTimePlayerChangeTest(){
+        myPanel.myOneTimePlayerChange();
+        JButton b = new JButton();
+        myPanel.getButtonsAr().add(b);
+        assertEquals(myPanel.getButtonsAr().size(), 4);
+    }
+    @Test
+    public void centerTextFieldTest(){
+        JTextField jtf = new JTextField();
+        myPanel.setPanel_Width(200);
+        jtf.setBounds(0,0,20, 50);
+        assertEquals(myPanel.centerATextFieldX(jtf), 90);
+    }
+
+    @Test
     public void layoutTestRightDoor() {
         myPanel.my1floorPanel();
         int pos = myPanel.getRightDoor().getX();
         assertEquals(pos, 900);
+    }
+    @Test
+    public void checkCallerTest(){
+        myPanel.checkCaller("checkCallerTest");
+        assertEquals(myPanel.getCaller().getMethodName(), "invoke");
+    }
+    @Test
+    public void pauseExecutionTest(){
+        myPanel.pauseExecution(3000,false);
+        assertFalse(myPanel.getSolvingRn());
     }
     @Test
     public void layoutTestLeftDoor() {

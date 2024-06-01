@@ -158,7 +158,7 @@ public class MyPanel extends JPanel implements ActionListener {
 
     /**
      * this method checks the caller of the method that called this method.
-     * in other words if I call this method from wherever il know who called the method that is on rn.
+     * in other words, if I call this method from wherever il know who called the method that is on rn.
      *
      * @param methodName for what method should I look for when searching for the previous method
      *                   based on comparing the method names, it does recalculate() change buttons pos without changing PANEL_WIDTH_OLD and PANEL_HEIGHT_OLD
@@ -918,5 +918,17 @@ public class MyPanel extends JPanel implements ActionListener {
      */
     public JButton getCenterDoor() {
         return centerDoor;
+    }
+    public StackTraceElement getCaller(){
+        return caller;
+    }
+    public boolean getSolvingRn(){
+        return solvingRn;
+    }
+    public void setPanel_Width(int PANEL_WIDTH) {
+        this.PANEL_WIDTH = PANEL_WIDTH;
+    }
+    public ArrayList getButtonsAr(){
+        return buttonsAr;
     }
 }

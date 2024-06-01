@@ -49,16 +49,17 @@ public class MyPanel extends JPanel implements ActionListener {
     private MainFunctions mf = new MainFunctions();
     private Random rd;
     private StackTraceElement caller;
+    private Graphics2D g2D;
     private Additions.MusicPlayer mp = new Additions.MusicPlayer();
 
     /**
      * this method creates a setup for the first floor which is:
-     * creating 5 buttons
-     * adding them to arrayList of buttons
-     * adding all the buttons to my panel
-     * creating an image background later used in componentPaint method
-     * creates a player image later used in componentPaint method
-     * checks who called this method to be sure if I should reassign the value of PANEL_WIDTH_OLD and PANEL_HEIGHT_OLD
+     * creating five buttons.
+     * adding them to arrayList of buttons.
+     * adding all the buttons to my panel.
+     * creating an image background later used in componentPaint method.
+     * creates a player image later used in componentPaint method.
+     * check who called this method to be sure if I should reassign the value of PANEL_WIDTH_OLD and PANEL_HEIGHT_OLD.
      */
     public void my1floorPanel() {
         buttonsAr.clear();
@@ -81,13 +82,13 @@ public class MyPanel extends JPanel implements ActionListener {
     }
 
     /**
-     *  this method creates a setup for the second floor which is:
-     *  creating 4 buttons
-     *  adding them to arrayList of buttons
-     *  adding all the buttons to my panel
-     *  creating an image background later used in componentPaint method
-     *  creates a player image later used in componentPaint method
-     *  checks who called this method to be sure if I should reassign the value of PANEL_WIDTH_OLD and PANEL_HEIGHT_OLD
+     * this method creates a setup for the second floor which is:
+     * creating four buttons.
+     * adding them to arrayList of buttons.
+     * adding all the buttons to my panel.
+     * creating an image background later used in componentPaint method.
+     * creates a player image later used in componentPaint method.
+     * check who called this method to be sure if I should reassign the value of PANEL_WIDTH_OLD and PANEL_HEIGHT_OLD.
      */
     public void my2floorPanel() {
         buttonsAr.clear();
@@ -106,14 +107,15 @@ public class MyPanel extends JPanel implements ActionListener {
         this.setVisible(true);
         repaint();
     }
+
     /**
-     *  this method creates a setup for the third floor which is:
-     *  creating 4 buttons
-     *  adding them to arrayList of buttons
-     *  adding all the buttons to my panel
-     *  creating an image background later used in componentPaint method
-     *  creates a player image later used in componentPaint method
-     *  checks who called this method to be sure if I should reassign the value of PANEL_WIDTH_OLD and PANEL_HEIGHT_OLD
+     * this method creates a setup for the third floor which is:
+     * creating four buttons.
+     * adding them to arrayList of buttons.
+     * adding all the buttons to my panel.
+     * creating an image background later used in componentPaint method.
+     * creates a player image later used in componentPaint method.
+     * check who called this method to be sure if I should reassign the value of PANEL_WIDTH_OLD and PANEL_HEIGHT_OLD.
      */
     public void my3floorPanel() {
         buttonsAr.clear();
@@ -132,14 +134,15 @@ public class MyPanel extends JPanel implements ActionListener {
         this.setVisible(true);
         repaint();
     }
+
     /**
-     *  this method creates a setup for the fourth/final floor which is:
-     *  creating 1 button
-     *  adding it to the arrayList of buttons
-     *  adding the button to my panel
-     *  creating an image background later used in componentPaint method
-     *  creates a player image later used in componentPaint method
-     *  checks who called this method to be sure if i should reassign the value of PANEL_WIDTH_OLD and PANEL_HEIGHT_OLD
+     * this method creates a setup for the fourth/final floor which is:
+     * creating one button.
+     * adding it to the arrayList of buttons.
+     * add the button to my panel.
+     * creating an image background later used in componentPaint method.
+     * creates a player image later used in componentPaint method.
+     * check who called this method to be sure if I should reassign the value of PANEL_WIDTH_OLD and PANEL_HEIGHT_OLD.
      */
     public void my4floorPanel() {
         buttonsAr.clear();
@@ -154,11 +157,12 @@ public class MyPanel extends JPanel implements ActionListener {
     }
 
     /**
-     * this method checks the caller of the method that called this method
-     * other words if i call this method from wherever il know who called the method that is on rn
-     * @param methodName for what method should i look for when searching for the previous method
-     *                   based on comparing the method names it does recalculate() change buttons pos without changing PANEL_WIDTH_OLD and PANEL_HEIGHT_OLD
-     *                   or moveButtons() which recalculates the buttons while changing the PANEL_WIDTH_OLD and PANEL_HEIGHT_OLD
+     * this method checks the caller of the method that called this method.
+     * in other words if I call this method from wherever il know who called the method that is on rn.
+     *
+     * @param methodName for what method should I look for when searching for the previous method
+     *                   based on comparing the method names, it does recalculate() change buttons pos without changing PANEL_WIDTH_OLD and PANEL_HEIGHT_OLD
+     *                   or moveButtons() which recalculates the buttons while changing the PANEL_WIDTH_OLD and PANEL_HEIGHT_OLD.
      */
     public void checkCaller(String methodName) {
         StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
@@ -173,7 +177,8 @@ public class MyPanel extends JPanel implements ActionListener {
     }
 
     /**
-     * this method changes all the buttons positions in the arrayList without changing the PANEL_WIDTH_OLD and PANEL_HEIGHT_OLD
+     * this method changes all the button positions in the arrayList
+     * without changing the PANEL_WIDTH_OLD and PANEL_HEIGHT_OLD.
      */
     public void recalculate() {
         int x;
@@ -186,20 +191,21 @@ public class MyPanel extends JPanel implements ActionListener {
     }
 
     /**
-     * this method adds all the buttons from my buttons arrayList to myPanel
+     * this method adds all the buttons from my buttons arrayList to myPanel.
      */
     public void addButtonsToMyPanel() {
-            int i = 0;
-            for (JButton ignored : buttonsAr) {
-                this.add(buttonsAr.get(i));
-                buttonsAr.get(i).setLocation(buttonsAr.get(i).getX(), buttonsAr.get(i).getY());
-                i++;
-            }
+        int i = 0;
+        for (JButton ignored : buttonsAr) {
+            this.add(buttonsAr.get(i));
+            buttonsAr.get(i).setLocation(buttonsAr.get(i).getX(), buttonsAr.get(i).getY());
+            i++;
+        }
     }
 
     /**
-     * this method moves all the buttons from button arrayList, moves answerField, moves chessPuzzle image and changes PANEL_WIDTH_OLD and PANEL_HEIGHT_OLD
-     * it changes its positions based on resizing the panel (PANEL_WIDTH and PANEL_HEIGHT)
+     * this method moves all the buttons from button arrayList, moves answerField,
+     * moves chessPuzzle image and changes PANEL_WIDTH_OLD and PANEL_HEIGHT_OLD.
+     * it changes its positions based on resizing the panel (PANEL_WIDTH and PANEL_HEIGHT).
      */
     public void moveButtons() {
         int x;
@@ -228,8 +234,8 @@ public class MyPanel extends JPanel implements ActionListener {
     }
 
     /**
-     *
-     * @param filePath
+     * this method creates an image called playerIcon based on the path that is passed in to the method.
+     * @param filePath a filepath that is used to find the right image that should be in an instance called playerImg.
      */
     public void createPlayer(String filePath) {
         playerImg = new ImageIcon(filePath).getImage();
@@ -237,19 +243,31 @@ public class MyPanel extends JPanel implements ActionListener {
         playerImg = new ImageIcon(playerImg).getImage();
     }
 
+    /**
+     * this method creates an image called backgroundImg based on the path that is passed in to the method.
+     * @param filePath a filepath that is used to find the right image that should be in an instance called backgroundImg.
+     */
     public void createBackground(String filePath) {
         backgroundImg = new ImageIcon(filePath).getImage();
         backgroundImg = backgroundImg.getScaledInstance(PANEL_WIDTH, PANEL_HEIGHT, Image.SCALE_SMOOTH);
         backgroundImg = new ImageIcon(backgroundImg).getImage();
     }
-    public void loadMusicPlayer(){
-        mp.load("bckgroundMusic","music/backgroundElevator.wav");
+
+    /**
+     * this method calls MusicPlayer class and loads all the music going to be played in the game.
+     */
+    public void loadMusicPlayer() {
+        mp.load("bckgroundMusic", "music/backgroundElevator.wav");
         mp.load("failMusic", "music/SpongebobFail.wav");
         mp.load("winMusic", "music/victory.wav");
         mp.load("thinkingMusic", "music/questionThinking.wav");
         mp.load("susFailMusic", "music/Huh.wav");
     }
 
+    /**
+     * this is the constructor of myPanel class, and it sets the basics
+     * for the panel and adds componentResized method.
+     */
     public MyPanel() {
         loadMusicPlayer();
         this.setLayout(null);
@@ -265,15 +283,27 @@ public class MyPanel extends JPanel implements ActionListener {
         });
         myOneTimePlayerChange();
     }
-    public void start(){
+
+    /**
+     * this method is just to load images in to an arrayList and to call layoutSetting for further settings.
+     */
+    public void start() {
         fillCorrectIncorrect();
         layoutSetting();
     }
-    public void myOneTimePlayerChange(){
+
+    /**
+     * This method creates three buttons that are being added to the buttons arrayList and
+     * adds them to the panel.
+     * Also check for the caller to make sure (when resizing myPanel)
+     * that the position values are being set rightly.
+     * And calls repaint to paint the icons (playerIcons).
+     */
+    public void myOneTimePlayerChange() {
         buttonsAr.clear();
-        createButton("Girl, left", PANEL_WIDTH*2/6 + 32 - 80, PANEL_HEIGHT*2/3, leftPlayer, false);
-        createButton("Boy, mid", PANEL_WIDTH*3/6 + 32 - 80, PANEL_HEIGHT*2/3, middlePlayer, false);
-        createButton("Vlc, right", PANEL_WIDTH*4/6 + 32 - 80, PANEL_HEIGHT*2/3, rightPlayer, false);
+        createButton("Girl, left", PANEL_WIDTH * 2 / 6 + 32 - 80, PANEL_HEIGHT * 2 / 3, leftPlayer, false);
+        createButton("Boy, mid", PANEL_WIDTH * 3 / 6 + 32 - 80, PANEL_HEIGHT * 2 / 3, middlePlayer, false);
+        createButton("Vlc, right", PANEL_WIDTH * 4 / 6 + 32 - 80, PANEL_HEIGHT * 2 / 3, rightPlayer, false);
         buttonsAr.add(leftPlayer);
         buttonsAr.add(middlePlayer);
         buttonsAr.add(rightPlayer);
@@ -283,6 +313,11 @@ public class MyPanel extends JPanel implements ActionListener {
         repaint();
     }
 
+    /**
+     * This method for being sure removes everything left from the former settings
+     * and decides what floor will be the next one set and displayed.
+     * Plays the background music.
+     */
     public void layoutSetting() {
         this.removeAll();
         mp.play("bckgroundMusic");
@@ -291,9 +326,16 @@ public class MyPanel extends JPanel implements ActionListener {
             case 2 -> my2floorPanel();
             case 3 -> my3floorPanel();
             case 4 -> my4floorPanel();
+            default -> System.exit(0);
         }
     }
 
+    /**
+     * this method calls methods for resizing background, buttons, playerIcon,
+     * submit button and text field when the panel size is changed.
+     * @param width sets the new width of the panel that's being stored in PANEL_WIDTH.
+     * @param height sets the new height of the panel that's being stored in PANEL_HEIGHT.
+     */
     private void resizeGame(int width, int height) {
         PANEL_WIDTH = width;
         PANEL_HEIGHT = height;
@@ -301,10 +343,24 @@ public class MyPanel extends JPanel implements ActionListener {
         repaint();
     }
 
+    /**
+     * this method sets a timer to new time.
+     * @param milliSecs the time that's the timer being set to.
+     */
     public void timerSetting(int milliSecs) {
-            timer = new Timer(milliSecs, this);
+        timer = new Timer(milliSecs, this);
     }
 
+    /**
+     * method for creating all the buttons easily.
+     * @param text this is the text displayed on the button.
+     * @param x this is the x position that's being used if the centeredX is false.
+     * @param y this is the y position.
+     * @param button this is the button that's being created.
+     * @param centeredX this calls a method for setting the x to be in the middle,
+     *                 according to buttons length if true.
+     *                  If false, nothing happens.
+     */
     private void createButton(String text, int x, int y, JButton button, boolean centeredX) {
         button.setFont(myFont);
         button.addMouseListener(new MouseAdapter() {
@@ -332,14 +388,32 @@ public class MyPanel extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * this method is being used to center a buttons xPosition based on the panel width and buttons width.
+     * @param button that's the button that's being centered.
+     * @return returns the position that should be right for the centered button.
+     */
     public Integer centerAButtonX(JButton button) {
         return (int) ((PANEL_WIDTH - button.getBounds().getWidth()) / 2);
     }
 
+    /**
+     * this method is being used to center a text fields x position based on the panel width and text fields width.
+     * @param textField this is the text field that is being centered (by x).
+     * @return returns the x value in the center (where the textField should be placed to be in the middle.
+     */
     public Integer centerATextFieldX(JTextField textField) {
         return (int) (PANEL_WIDTH - textField.getBounds().getWidth()) / 2;
     }
 
+    /**
+     * this method resolves the length of a string in pixels and calculates
+     * where the string should be placed to be in the middle (x position only)
+     * thanks to the centerAString method.
+     * @param string the string that's being measured.
+     * @param fontSize the font size that's being currently used.
+     * @return returns an x position where the string should be placed to be in the middle of the panel.
+     */
     public Integer setCenteredWidth(String string, int fontSize) {
         myFont = new Font("Arial", Font.BOLD, fontSize);
         FontMetrics fm1 = g2D.getFontMetrics(myFont);
@@ -348,30 +422,39 @@ public class MyPanel extends JPanel implements ActionListener {
         return centerAString(fm1.stringWidth(flexibleString));
     }
 
-    private Graphics2D g2D;
-    public void playerPick(String fileName){
+
+    /**
+     * a special method used to do the same as createPlayer just with a bigger width and height.
+     * @param fileName the fileName that's deciding what picture will I use.
+     */
+    public void playerPick(String fileName) {
         playerImg = new ImageIcon(fileName).getImage();
         playerImg = playerImg.getScaledInstance(150, 150, Image.SCALE_SMOOTH);
         playerImg = new ImageIcon(playerImg).getImage();
     }
 
+    /**
+     * this method is used to create every visual thing in the game
+     * except things like buttons and textField.
+     * @param g the <code>Graphics</code> object to protect this is the graphic tool that I use.
+     */
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         g2D = (Graphics2D) g;
         Font myFont1 = new Font("Arial", Font.BOLD, 20);
         Font myFont = new Font("Arial", Font.BOLD, 12);
         Font myEndFont = new Font("Arial", Font.PLAIN, 50);
-        if(oneTime == 0){
+        if (oneTime == 0) {
             xCenteredValue = setCenteredWidth("Pick a playerIcon", 20);
             g2D.setFont(myFont1);
-            g2D.drawString("Pick a playerIcon", xCenteredValue, PANEL_HEIGHT/10);
+            g2D.drawString("Pick a playerIcon", xCenteredValue, PANEL_HEIGHT / 10);
             playerPick("Players/girlPlayer.png");
-            g2D.drawImage(playerImg, PANEL_WIDTH*2/6-80, PANEL_HEIGHT/3, this);
+            g2D.drawImage(playerImg, PANEL_WIDTH * 2 / 6 - 80, PANEL_HEIGHT / 3, this);
             playerPick("Players/playerIcon.png");
-            g2D.drawImage(playerImg, PANEL_WIDTH*3/6-80, PANEL_HEIGHT/3, this);
+            g2D.drawImage(playerImg, PANEL_WIDTH * 3 / 6 - 80, PANEL_HEIGHT / 3, this);
             playerPick("Players/vlcPlayer.png");
-            g2D.drawImage(playerImg, PANEL_WIDTH*4/6-80, PANEL_HEIGHT/3, this);
-        }else if ((chessPuzzle != null || riddle != null) && !lastRiddle) {
+            g2D.drawImage(playerImg, PANEL_WIDTH * 4 / 6 - 80, PANEL_HEIGHT / 3, this);
+        } else if ((chessPuzzle != null || riddle != null) && !lastRiddle) {
             this.removeAll();
             g2D.setFont(myFont1);
             g2D.setColor(Color.ORANGE);
@@ -417,25 +500,38 @@ public class MyPanel extends JPanel implements ActionListener {
             g2D.drawString(endMessageString(), xCenteredValue, PANEL_HEIGHT / 2);
         } else {
             g2D.drawImage(backgroundImg, 0, 0, PANEL_WIDTH, PANEL_HEIGHT, this);
-            if(playerImg != null) {
+            if (playerImg != null) {
                 g2D.drawString("You", startX + 13, startY - 5);
                 g2D.drawImage(playerImg, startX, startY, null);
             }
         }
     }
 
+    /**
+     * This method is a helping method for setCenteredWidth.
+     * This method calculates what's the best position for the string to be placed,
+     * to be in the center of the panel.
+     * @param pixelLength this is the pixel length of the string calculated.
+     * @return this method returns the centered x position for the string.
+     */
     public Integer centerAString(int pixelLength) {
         return (PANEL_WIDTH - pixelLength) / 2;
     }
 
+    /**
+     * This method is used to decide whether a player moves to the next floor
+     * or stays at the floor he is rn.
+     * Also, the method contains an if to decide
+     * that the player should go to the fourth floor from the first floor
+     */
     public void nextFloorOrBackToFloor() {
-        if(Objects.equals(actionWhere, "centerDoor") && !wallDone){
+        if (Objects.equals(actionWhere, "centerDoor") && !wallDone) {
             mp.stop("thinkingMusic");
             isWall();
-            if(displayWall){
+            if (displayWall) {
                 repaint();
                 return;
-            }else{
+            } else {
                 mf.setCurrentFloor(4);
             }
         }
@@ -448,6 +544,13 @@ public class MyPanel extends JPanel implements ActionListener {
         layoutSetting();
     }
 
+    /**
+     * this method sets all values used to move playerIcon and sets timer for a specified time
+     * @param startX thi is the value x where the player icon is rn
+     * @param startY this is the value y where the player icon is rn
+     * @param endX this is the value x where the player will be moving to
+     * @param endY this is the value y where the player will be moving to
+     */
     public void animate(int startX, int startY, int endX, int endY) {
         this.startX = startX;
         this.startY = startY;
@@ -457,12 +560,20 @@ public class MyPanel extends JPanel implements ActionListener {
         timer.start();
     }
 
+    /**
+     * this method is used as a string rulesForChess
+     * @return returns the string rulesForChess
+     */
     public String rulesForChessPuzzles() {
         return "Rules: In chess puzzles you need to enter either " +
                 "the figure that moves and the placement where it would move, or the " +
                 "number of moves that it would take to win";
     }
 
+    /**
+     *
+     * @return
+     */
     public String endMessageString() {
         return "You LOST!";
     }
@@ -531,7 +642,7 @@ public class MyPanel extends JPanel implements ActionListener {
             playerIsDone = true;
             repaint();
         }
-        ps.setStamina(ps.getStamina()+3);
+        ps.setStamina(ps.getStamina() + 3);
         return ps.getStamina() >= 70;
     }
 
@@ -543,17 +654,17 @@ public class MyPanel extends JPanel implements ActionListener {
             if (check()) return;
             actionWhere = "leftDoor";
             animate(startX, startY, leftDoor.getX(), leftDoor.getY());
-        } else if(e.getSource() == leftPlayer){
+        } else if (e.getSource() == leftPlayer) {
             filePath = "Players/girlPlayer.png";
             start();
             oneTime++;
             return;
-        } else if(e.getSource() == middlePlayer){
+        } else if (e.getSource() == middlePlayer) {
             filePath = "Players/playerIcon.png";
             start();
             oneTime++;
             return;
-        } else if(e.getSource() == rightPlayer){
+        } else if (e.getSource() == rightPlayer) {
             filePath = "Players/vlcPlayer.png";
             start();
             oneTime++;
@@ -586,7 +697,7 @@ public class MyPanel extends JPanel implements ActionListener {
             startY += deltaY;
             repaint();
         }
-       if (deltaX == 0 && deltaY == 0 && e.getSource() == timer) {
+        if (deltaX == 0 && deltaY == 0 && e.getSource() == timer) {
             timer.stop();
             mp.stop("bckgroundMusic");
             mp.play("thinkingMusic");
@@ -603,13 +714,14 @@ public class MyPanel extends JPanel implements ActionListener {
             }
         }
     }
-    public void isWall(){
-        if(!((wallCount %5) == 0)){
+
+    public void isWall() {
+        if (!((wallCount % 5) == 0)) {
             displayWall = true;
             createBackground("AdditionalPics/wall.jpg");
             mp.stop("bckgroundMusic");
             mp.play("susFailMusic");
-        }else{
+        } else {
             displayWall = false;
         }
     }
@@ -662,7 +774,7 @@ public class MyPanel extends JPanel implements ActionListener {
             puzzle = false;
             riddle = null;
             lastRiddle = false;
-            if(Objects.equals(actionWhere, "centerDoor")){//might cause problems?
+            if (Objects.equals(actionWhere, "centerDoor")) {//might cause problems?
                 nextFloorOrBackToFloor();
                 return;
             }
@@ -698,6 +810,7 @@ public class MyPanel extends JPanel implements ActionListener {
             }
         });
     }
+
     public void pauseExecution(int milliseconds) {
         Timer timer = new Timer(milliseconds, new ActionListener() {
             @Override
@@ -712,6 +825,7 @@ public class MyPanel extends JPanel implements ActionListener {
         timer.setRepeats(false);
         timer.start();
     }
+
     public JButton getRightDoor() {
         return rightDoor;
     }
